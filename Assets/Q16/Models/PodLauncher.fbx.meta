@@ -1,0 +1,139 @@
+fileFormatVersion: 2
+guid: 76a4dd43dc6ec314bb7eba8c42809d99
+timeCreated: 1475434695
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: front
+    100002: frontMesh
+    100004: pod0
+    100006: pod0Mesh
+    100008: pod1
+    100010: pod1Mesh
+    100012: pod2
+    100014: pod2Mesh
+    100016: pod3
+    100018: pod3Mesh
+    100020: pod4
+    100022: pod4Mesh
+    100024: pod5
+    100026: pod5Mesh
+    100028: //RootNode
+    100030: sideLeft
+    100032: sideLeftMesh
+    100034: sideRight
+    100036: sideRightMesh
+    400000: front
+    400002: frontMesh
+    400004: pod0
+    400006: pod0Mesh
+    400008: pod1
+    400010: pod1Mesh
+    400012: pod2
+    400014: pod2Mesh
+    400016: pod3
+    400018: pod3Mesh
+    400020: pod4
+    400022: pod4Mesh
+    400024: pod5
+    400026: pod5Mesh
+    400028: //RootNode
+    400030: sideLeft
+    400032: sideLeftMesh
+    400034: sideRight
+    400036: sideRightMesh
+    2300000: frontMesh
+    2300002: pod0Mesh
+    2300004: pod1Mesh
+    2300006: pod2Mesh
+    2300008: pod3Mesh
+    2300010: pod4Mesh
+    2300012: pod5Mesh
+    2300014: //RootNode
+    2300016: sideLeftMesh
+    2300018: sideRightMesh
+    3300000: frontMesh
+    3300002: pod0Mesh
+    3300004: pod1Mesh
+    3300006: pod2Mesh
+    3300008: pod3Mesh
+    3300010: pod4Mesh
+    3300012: pod5Mesh
+    3300014: //RootNode
+    3300016: sideLeftMesh
+    3300018: sideRightMesh
+    4300000: podlauncher
+    4300002: frontMesh
+    4300004: sideLeftMesh
+    4300006: pod0Mesh
+    4300008: pod2Mesh
+    4300010: pod1Mesh
+    4300012: sideRightMesh
+    4300014: pod3Mesh
+    4300016: pod4Mesh
+    4300018: pod5Mesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

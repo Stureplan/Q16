@@ -1,0 +1,178 @@
+fileFormatVersion: 2
+guid: b19d2e0f812279e4fa9ecc3af49c4674
+timeCreated: 1467985811
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: chest
+    100002: enemy
+    100004: //RootNode
+    100006: hip
+    100008: l_arm
+    100010: l_foot
+    100012: l_hand
+    100014: l_leg
+    100016: r_arm
+    100018: r_foot
+    100020: r_hand
+    100022: r_leg
+    100024: Golem:chest
+    100026: Golem:enemy
+    100028: Golem:hip
+    100030: Golem:l_arm
+    100032: Golem:l_foot
+    100034: Golem:l_hand
+    100036: Golem:l_leg
+    100038: Golem:r_arm
+    100040: Golem:r_foot
+    100042: Golem:r_hand
+    100044: Golem:r_leg
+    400000: chest
+    400002: enemy
+    400004: //RootNode
+    400006: hip
+    400008: l_arm
+    400010: l_foot
+    400012: l_hand
+    400014: l_leg
+    400016: r_arm
+    400018: r_foot
+    400020: r_hand
+    400022: r_leg
+    400024: Golem:chest
+    400026: Golem:enemy
+    400028: Golem:hip
+    400030: Golem:l_arm
+    400032: Golem:l_foot
+    400034: Golem:l_hand
+    400036: Golem:l_leg
+    400038: Golem:r_arm
+    400040: Golem:r_foot
+    400042: Golem:r_hand
+    400044: Golem:r_leg
+    2300000: enemy
+    3300000: enemy
+    4300000: enemy
+    4300002: Golem:enemy
+    7400000: Shoot
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: enemy
+    13700002: Golem:enemy
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Shoot
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: enemy
+        weight: 1
+      - path: hip
+        weight: 1
+      - path: hip/chest
+        weight: 1
+      - path: hip/chest/l_arm
+        weight: 1
+      - path: hip/chest/l_arm/l_hand
+        weight: 1
+      - path: hip/chest/r_arm
+        weight: 1
+      - path: hip/chest/r_arm/r_hand
+        weight: 1
+      - path: hip/l_leg
+        weight: 1
+      - path: hip/l_leg/l_foot
+        weight: 1
+      - path: hip/r_leg
+        weight: 1
+      - path: hip/r_leg/r_foot
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

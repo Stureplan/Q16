@@ -18,6 +18,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < weaponObjects.Length; i++)
         {
             SetHasWeapon(i, true);
+            weaponObjects[i].GetComponent<Weapon>().index = i;
         }
 
         // START WITH SG ACTIVE

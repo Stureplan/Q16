@@ -53,6 +53,11 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    public void SetIndex(int i)
+    {
+        index = i;
+    }
+
     public float GetCD()
     {
         return CD;

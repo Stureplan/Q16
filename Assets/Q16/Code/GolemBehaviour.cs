@@ -6,8 +6,10 @@ public class GolemBehaviour : EnemyBehaviour
     public GameObject explosion;
 	public GameObject shot;
 	Transform hand;
-	Cooldown cd;
-	Animation animShoot;
+	Cooldown walkTimer;
+    Cooldown chopTimer;
+    Cooldown shootTimer;
+	Animator anim;
 
     NavMeshAgent agent;
     CharacterController cc;
@@ -29,16 +31,18 @@ public class GolemBehaviour : EnemyBehaviour
         forces = Vector3.zero;
 
 		hand = transform.Find ("hip/chest/r_arm/r_hand");
-		animShoot = GetComponent<Animation>();
+		anim = GetComponent<Animator>();
 
 
         float CD = 1.0f;
-        cd = new Cooldown(CD);
+        walkTimer = new Cooldown(CD);
+        chopTimer = new Cooldown(3.0f);
+        shootTimer = new Cooldown(0.5f);
 	}
 	
 	void Update () 
 	{
-		cd.UpdateTimer();
+        walkTimer.UpdateTimer();
 
 		if (health <= 0)
 		{
@@ -46,11 +50,25 @@ public class GolemBehaviour : EnemyBehaviour
 		}
 
 		float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance < 15.0f && cd.ActionReady())
+
+        if (distance < 15.0f && walkTimer.ActionReady())
         {
             agent.SetDestination(player.transform.position);
+            anim.Play("Walk");
 
-            cd.ResetTimer();
+            walkTimer.ResetTimer();
+        }
+
+        if (distance < 5.0f)
+        {
+            chopTimer.UpdateTimer();
+
+            if (chopTimer.ActionReady())
+            {
+                //chop
+                anim.CrossFade("Chop", 0.2f);
+                chopTimer.ResetTimer();
+            }
         }
         
         
@@ -108,23 +126,15 @@ public class GolemBehaviour : EnemyBehaviour
 
 		Quaternion rot = Quaternion.LookRotation(player.transform.position - hand.position);
 		Instantiate (shot, hand.position, rot);
-		PlayAnimation(0);
+		PlayAnimation("Shoot");
 
-		cd.ResetTimer();
+        shootTimer.ResetTimer();
 	}
 
-	public void PlayAnimation(int index)
+	public void PlayAnimation(string name)
 	{
-		switch(index)
-		{
-			case 0:
-				{
-                    animShoot.Stop();
-					animShoot.Play ();
-                    
-					break;
-				}
-		}
+        anim.Stop();
+        anim.Play(name);
 	}
 
     public override void Damage(int amt)

@@ -9,14 +9,15 @@ public class GolemBehaviour : EnemyBehaviour
 	Cooldown cd;
 	Animation animShoot;
 
+    NavMeshAgent agent;
     CharacterController cc;
     Vector3 forces;
+
 
 	void Start () 
 	{
         SetupReferences();
 
-        rotateSpeed = 60.0f;
         maxHealth = 100;
         health = 100;
 
@@ -24,19 +25,14 @@ public class GolemBehaviour : EnemyBehaviour
         //Golem specific |
         //               v
         cc = GetComponent<CharacterController>();
+        agent = GetComponent<NavMeshAgent>();
         forces = Vector3.zero;
 
 		hand = transform.Find ("hip/chest/r_arm/r_hand");
 		animShoot = GetComponent<Animation>();
-		float CD = 1.0f;
 
-        float newCD = Stats.info.timesLoaded / 5.0f;
-        //if (Stats.info.amountHit > 0 && Stats.info.amountShot > 0)
-        {
-            //CD = CD * Stats.info.amountHit / Stats.info.amountShot;
-            CD = CD - newCD;
-            if (CD < 0.2f) { CD = 0.2f; }
-        }
+
+        float CD = 1.0f;
         cd = new Cooldown(CD);
 	}
 	
@@ -50,7 +46,15 @@ public class GolemBehaviour : EnemyBehaviour
 		}
 
 		float distance = Vector3.Distance(player.transform.position, transform.position);
+        if (distance < 15.0f && cd.ActionReady())
+        {
+            agent.SetDestination(player.transform.position);
 
+            cd.ResetTimer();
+        }
+        
+        
+        /*
 		if (player != null && distance < 20.0f)
 		{
 			Vector3 vRot;
@@ -66,7 +70,7 @@ public class GolemBehaviour : EnemyBehaviour
 			{
 				Shoot (player.transform.position);
 			}
-		}
+		}*/
 
 
         ApplyPhysics();

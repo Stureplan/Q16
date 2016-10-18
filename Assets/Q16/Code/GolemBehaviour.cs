@@ -3,18 +3,26 @@ using System.Collections;
 
 public class GolemBehaviour : EnemyBehaviour 
 {
+    public enum STATE
+    {
+        IDLE,
+        WALKING,
+        CHOPPING,
+        SHOOTING
+    }
+
+    STATE CURRENT_STATE;
+    int number = 0;
+
     public GameObject explosion;
 	public GameObject shot;
 	Transform hand;
-	Cooldown walkTimer;
-    Cooldown chopTimer;
     Cooldown shootTimer;
 	Animator anim;
 
     NavMeshAgent agent;
     CharacterController cc;
     Vector3 forces;
-
 
 	void Start () 
 	{
@@ -33,66 +41,93 @@ public class GolemBehaviour : EnemyBehaviour
 		hand = transform.Find ("hip/chest/r_arm/r_hand");
 		anim = GetComponent<Animator>();
 
-
-        float CD = 1.0f;
-        walkTimer = new Cooldown(CD);
-        chopTimer = new Cooldown(3.0f);
         shootTimer = new Cooldown(0.5f);
+
+
+        CURRENT_STATE = STATE.IDLE;
 	}
 	
 	void Update () 
 	{
-        walkTimer.UpdateTimer();
+        number++;
+
+        float distance = Vector3.Distance(player.transform.position, transform.position);
+        CheckState(CURRENT_STATE, distance);
+
+
+
+
+
+
+
+
+
 
 		if (health <= 0)
 		{
 			Kill (Mathf.Abs(health));
 		}
 
-		float distance = Vector3.Distance(player.transform.position, transform.position);
-
-        if (distance < 15.0f && walkTimer.ActionReady())
-        {
-            agent.SetDestination(player.transform.position);
-            anim.Play("Walk");
-
-            walkTimer.ResetTimer();
-        }
-
-        if (distance < 5.0f)
-        {
-            chopTimer.UpdateTimer();
-
-            if (chopTimer.ActionReady())
-            {
-                //chop
-                anim.CrossFade("Chop", 0.2f);
-                chopTimer.ResetTimer();
-            }
-        }
-        
-        
-        /*
-		if (player != null && distance < 20.0f)
-		{
-			Vector3 vRot;
-			Quaternion qRot;
-
-			vRot = player.transform.position - transform.position;
-			vRot.y = 0.0f;
-			qRot = Quaternion.LookRotation(vRot, Vector3.up);
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, qRot, rotateSpeed * Time.deltaTime);
-
-
-			if (cd.ActionReady())
-			{
-				Shoot (player.transform.position);
-			}
-		}*/
-
-
         ApplyPhysics();
 	}
+
+    void CheckState(STATE cState, float d)
+    {
+        switch (cState)
+        {
+            case STATE.IDLE:
+                Idle(d);
+                break;
+
+            case STATE.WALKING:
+                Walk(d);
+                break;
+
+            case STATE.CHOPPING:
+                break;
+
+            case STATE.SHOOTING:
+                break;
+        }
+    }
+
+    void Idle(float d)
+    {
+        //If we're not playing Idle anim, play it
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+            anim.SetTrigger("tIdle");
+        }
+
+        //If we were close enough to the player..
+        if (d < 15.0f)
+        {
+            //Change to walking
+            GoToState(STATE.WALKING);
+        }
+    }
+
+    void Walk(float d)
+    {
+        
+
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+        {
+            anim.SetTrigger("tWalk");
+        }
+
+        //Only set a new desination every 60 frames
+        if (number % 60 == 0)
+        {
+            agent.SetDestination(player.transform.position);
+        }
+    }
+
+    public void GoToState(STATE toState)
+    {
+        CURRENT_STATE = toState;
+    }
+
 
     void ApplyPhysics()
     {

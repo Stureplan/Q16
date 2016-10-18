@@ -3,8 +3,17 @@ using System.Collections;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+    public enum ENEMY_TYPE
+    {
+        GOLEM,
+        CULTIST,
+        TENTACLE_WARRIOR
+    }
+
+
     public GameObject player;
     public GameObject deathFX;
+    public GameObject enemyGibs;
 
     public ParticleSystem chunkPS;
 
@@ -28,6 +37,7 @@ public class EnemyBehaviour : MonoBehaviour
         mr = GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
+
     public virtual void Damage(int amt) { }
     public virtual void Headshot(int dmg) { }
     public virtual void Kill(int overkill) { }
@@ -40,6 +50,8 @@ public class EnemyBehaviour : MonoBehaviour
 
         int chunks = Stats.info.timesLoaded * 3;
         chunkPS.Emit(10 + chunks);
+
+        Instantiate(enemyGibs, transform.position, transform.rotation);
     }
 
     public void SetPlayer(GameObject go)

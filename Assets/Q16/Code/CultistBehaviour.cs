@@ -45,6 +45,7 @@ public class CultistBehaviour : EnemyBehaviour
 	void Start ()
     {
         SetupReferences();
+
         forces = Vector3.zero;
 
 
@@ -372,6 +373,7 @@ public class CultistBehaviour : EnemyBehaviour
         if (overkill >= maxHealth /* / 2 */) //If the enemy was dealt 100% of max health or more beyond kill
         {
             EmitParticles();
+
         }
         else
         {

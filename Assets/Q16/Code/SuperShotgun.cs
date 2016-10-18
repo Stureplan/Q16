@@ -97,11 +97,12 @@ public class SuperShotgun : Weapon
 
                     enemy = hit.collider.GetComponent<EnemyBehaviour>();
                     enemy.Damage(15);
-
+                    
                     // PUSH RAGDOLL
                     if (enemy.GetHealth() < 0)
                     {
                         enemy.SetDeathDirection(dir, power);
+                        //TODO: Enemy killed, increase Emission texture here!
                     }
 
                     pelletsHit++;

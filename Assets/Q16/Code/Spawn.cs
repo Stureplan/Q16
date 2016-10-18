@@ -18,7 +18,7 @@ public class Spawn : MonoBehaviour
 		for (int i = 0; i < enemies.Length; i++)
 		{
 			EnemyBehaviour eb = enemies[i].GetComponent<EnemyBehaviour>();
-			eb.SetPlayer(player);
+			eb.SetPlayer(player.transform);
 		}
 
         MessageLog.InitializeLog();

@@ -11,7 +11,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
 
-    public GameObject player;
+    public Transform player;
     public GameObject deathFX;
     public GameObject enemyGibs;
 
@@ -54,9 +54,9 @@ public class EnemyBehaviour : MonoBehaviour
         Instantiate(enemyGibs, transform.position, transform.rotation);
     }
 
-    public void SetPlayer(GameObject go)
+    public void SetPlayer(Transform trans)
     {
-        player = go;
+        player = trans;
     }
 
     public void SetDeathDirection(Vector3 dir, float power)

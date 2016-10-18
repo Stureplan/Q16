@@ -72,8 +72,11 @@ public class GolemBehaviour : EnemyBehaviour
 			Kill (Mathf.Abs(health));
 		}
 
-        ApplyPhysics();
-	}
+        if (cc.enabled == true)
+        {
+            ApplyPhysics();
+        }
+    }
 
     void CheckState(STATE cState, float dist, float dot)
     {
@@ -171,6 +174,7 @@ public class GolemBehaviour : EnemyBehaviour
         }
 
         agent.ResetPath();
+        agent.velocity = Vector3.zero;
     }
 
     public void GoToState(STATE toState)
@@ -200,6 +204,29 @@ public class GolemBehaviour : EnemyBehaviour
         Quaternion rot = Quaternion.LookRotation(player.transform.position - hand.position);
         Instantiate(shot, hand.position, rot);
         cTimesShot++;
+    }
+
+    void Ragdoll()
+    {
+        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+        Collider col;
+
+        for (int i = 0; i < rbs.Length; i++)
+        {
+            rbs[i].isKinematic = false;
+            col = rbs[i].GetComponent<Collider>();
+            col.enabled = true;
+
+            rbs[i].AddForce(deathDirection * deathPower, ForceMode.Impulse);
+            rbs[i].gameObject.layer = 14;
+
+
+            if (rbs[i].name == "Axe")
+            {
+                rbs[i].gameObject.AddComponent<DestroyInSeconds>().SetTime(10.0f);
+                rbs[i].transform.parent = null;
+            }
+        }
     }
 
     void ApplyPhysics()
@@ -242,6 +269,8 @@ public class GolemBehaviour : EnemyBehaviour
 
     public override void Push(Vector3 dir, float force)
     {
+        cc.enabled = true;
+
         dir.Normalize();
 
         dir.y = 0.0f;
@@ -253,15 +282,24 @@ public class GolemBehaviour : EnemyBehaviour
         if (overkill >= maxHealth) //If the enemy was dealt 100% of max health under 0
         {
             EmitParticles();
+            Destroy(this.gameObject);
+
         }
         else
         {
-            EmitParticles();
-            //TODO: Play death animation
-            //TODO: Delay destroy gameobject
+            //EmitParticles();
+            gameObject.AddComponent<DestroyInSeconds>().SetTime(10.0f);
+            Collider col = GetComponent<Collider>();
+            col.enabled = false;
+
+            Ragdoll();
+            Destroy(anim);
+            Destroy(agent);
+            Destroy(cc);
+            Destroy(col);
+            Destroy(this);
         }
 
         Stats.info.enemiesKilled++;
-        Destroy(this.gameObject);
     }
 }

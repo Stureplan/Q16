@@ -109,18 +109,26 @@ public class GolemBehaviour : EnemyBehaviour
 
     void Walk(float d)
     {
-        
-
-        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+        //Only set a new desination every X frames
+        if (number % 20 == 0)
         {
-            anim.SetTrigger("tWalk");
+            if (d < 15.0f)
+            {
+                agent.SetDestination(player.transform.position);
+                if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+                {
+                    anim.SetTrigger("tWalk");
+                }
+            }
+            else
+            {
+                agent.ResetPath();
+                GoToState(STATE.IDLE);
+            }
         }
 
-        //Only set a new desination every 60 frames
-        if (number % 60 == 0)
-        {
-            agent.SetDestination(player.transform.position);
-        }
+
+
     }
 
     public void GoToState(STATE toState)

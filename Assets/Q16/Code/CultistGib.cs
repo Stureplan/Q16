@@ -10,7 +10,7 @@ public class CultistGib : MonoBehaviour
 
 
         int shouldSpawn = Random.Range(0, 5);
-        if (shouldSpawn >= 4)
+        if (shouldSpawn >= 3)
         {
             //disable GameObject
         }

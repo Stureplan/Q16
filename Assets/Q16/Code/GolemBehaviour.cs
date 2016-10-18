@@ -52,7 +52,9 @@ public class GolemBehaviour : EnemyBehaviour
         number++;
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
-        CheckState(CURRENT_STATE, distance);
+        float dot = Vector3.Dot(transform.forward, (player.transform.position - transform.position).normalized);
+
+        CheckState(CURRENT_STATE, distance, dot);
 
 
 
@@ -71,19 +73,20 @@ public class GolemBehaviour : EnemyBehaviour
         ApplyPhysics();
 	}
 
-    void CheckState(STATE cState, float d)
+    void CheckState(STATE cState, float dist, float dot)
     {
         switch (cState)
         {
             case STATE.IDLE:
-                Idle(d);
+                Idle(dist, dot);
                 break;
 
             case STATE.WALKING:
-                Walk(d);
+                Walk(dist, dot);
                 break;
 
             case STATE.CHOPPING:
+                Chop();
                 break;
 
             case STATE.SHOOTING:
@@ -91,7 +94,7 @@ public class GolemBehaviour : EnemyBehaviour
         }
     }
 
-    void Idle(float d)
+    void Idle(float dist, float dot)
     {
         //If we're not playing Idle anim, play it
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
@@ -100,35 +103,57 @@ public class GolemBehaviour : EnemyBehaviour
         }
 
         //If we were close enough to the player..
-        if (d < 15.0f)
+        if (dist < 15.0f)
         {
             //Change to walking
             GoToState(STATE.WALKING);
         }
     }
 
-    void Walk(float d)
+    void Walk(float dist, float dot)
     {
         //Only set a new desination every X frames
+        //TODO: Change this to a timer instead, way safer for slow computers
         if (number % 20 == 0)
         {
-            if (d < 15.0f)
+            if (dist < 3.0f && dot > 0.5f)
+            {
+                //Chop
+                GoToState(STATE.CHOPPING);
+                return;
+            }
+
+
+            //If we're 15 units away
+            if (dist < 15.0f)
             {
                 agent.SetDestination(player.transform.position);
+                
                 if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
                 {
                     anim.SetTrigger("tWalk");
                 }
+
+                return;
             }
             else
             {
+                //If we weren't within detection range, go back to Idle
+                //and clear the path we were previously taking
                 agent.ResetPath();
                 GoToState(STATE.IDLE);
             }
         }
+    }
 
+    void Chop()
+    {
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Chop"))
+        {
+            anim.SetTrigger("tChop");
+        }
 
-
+        agent.ResetPath();
     }
 
     public void GoToState(STATE toState)

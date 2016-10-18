@@ -13,6 +13,7 @@ public class GolemBehaviour : EnemyBehaviour
 
     STATE CURRENT_STATE;
     int number = 0;
+    int cTimesShot = 0;
 
     public GameObject explosion;
 	public GameObject shot;
@@ -38,10 +39,10 @@ public class GolemBehaviour : EnemyBehaviour
         agent = GetComponent<NavMeshAgent>();
         forces = Vector3.zero;
 
-		hand = transform.Find ("hip/chest/r_arm/r_hand");
+		hand = transform.Find ("hips/neck/arm_r/elbow_r/hand_r");
 		anim = GetComponent<Animator>();
 
-        shootTimer = new Cooldown(0.5f);
+        shootTimer = new Cooldown(Random.Range(4.0f, 6.0f));
 
 
         CURRENT_STATE = STATE.IDLE;
@@ -49,10 +50,11 @@ public class GolemBehaviour : EnemyBehaviour
 	
 	void Update () 
 	{
+        shootTimer.UpdateTimer();
         number++;
 
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-        float dot = Vector3.Dot(transform.forward, (player.transform.position - transform.position).normalized);
+        float distance  = Vector3.Distance(player.transform.position, transform.position);
+        float dot       = Vector3.Dot(transform.forward, (player.transform.position - transform.position).normalized);
 
         CheckState(CURRENT_STATE, distance, dot);
 
@@ -90,6 +92,7 @@ public class GolemBehaviour : EnemyBehaviour
                 break;
 
             case STATE.SHOOTING:
+                Shoot();
                 break;
         }
     }
@@ -102,8 +105,9 @@ public class GolemBehaviour : EnemyBehaviour
             anim.SetTrigger("tIdle");
         }
 
-        //If we were close enough to the player..
-        if (dist < 15.0f)
+        //If we were close enough to the player
+        //and angle is close enough
+        if (dist < 20.0f)
         {
             //Change to walking
             GoToState(STATE.WALKING);
@@ -124,22 +128,35 @@ public class GolemBehaviour : EnemyBehaviour
             }
 
 
-            //If we're 15 units away
-            if (dist < 15.0f)
+            //If we're 20 units away
+            if (dist < 20.0f)
             {
-                agent.SetDestination(player.transform.position);
-                
-                if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+                //Decide if we're gonna shoot or approach
+                int decision = Random.Range(0, 4);
+                if (decision < 3 && dot > 0.75f && shootTimer.ActionReady())
                 {
-                    anim.SetTrigger("tWalk");
+                    //50% chance
+                    GoToState(STATE.SHOOTING);
+                    return;
                 }
+                else
+                {
+                    agent.SetDestination(player.transform.position);
 
-                return;
+                    if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+                    {
+                        anim.SetTrigger("tWalk");
+                    }
+
+                    return;
+                }
             }
             else
             {
                 //If we weren't within detection range, go back to Idle
                 //and clear the path we were previously taking
+
+                //TODO: Move ResetPath to Idle()
                 agent.ResetPath();
                 GoToState(STATE.IDLE);
             }
@@ -161,6 +178,29 @@ public class GolemBehaviour : EnemyBehaviour
         CURRENT_STATE = toState;
     }
 
+    void Shoot()
+    {
+        if (shootTimer.ActionReady())
+        {
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
+            {
+                anim.SetTrigger("tShoot");
+            }
+
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+
+            shootTimer.ResetTimer();
+        }
+    }
+
+    public void ActuallyShoot()
+    {
+        //Shoot towards player
+        Quaternion rot = Quaternion.LookRotation(player.transform.position - hand.position);
+        Instantiate(shot, hand.position, rot);
+        cTimesShot++;
+    }
 
     void ApplyPhysics()
     {
@@ -187,17 +227,6 @@ public class GolemBehaviour : EnemyBehaviour
         }
 
     }
-
-	void Shoot(Vector3 pos)
-	{
-		//Shoot towards player
-
-		Quaternion rot = Quaternion.LookRotation(player.transform.position - hand.position);
-		Instantiate (shot, hand.position, rot);
-		PlayAnimation("Shoot");
-
-        shootTimer.ResetTimer();
-	}
 
 	public void PlayAnimation(string name)
 	{

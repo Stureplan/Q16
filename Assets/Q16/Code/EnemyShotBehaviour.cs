@@ -39,7 +39,14 @@ public class EnemyShotBehaviour : MonoBehaviour
             //TODO: UI effect?
 
             Health h = other.gameObject.GetComponent<Health>();
-            h.Damage(10);
+            PlayerInput p = other.gameObject.GetComponent<PlayerInput>();
+
+            h.Damage(15);
+
+            Vector3 force = transform.forward;
+            force.y = 0.5f;
+            p.AddForce(force, 7.5f);
+
             SelfDestruct();
         }
 

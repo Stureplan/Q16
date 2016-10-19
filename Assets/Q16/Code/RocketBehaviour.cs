@@ -88,7 +88,7 @@ public class RocketBehaviour : MonoBehaviour {
                     Vector3 hitDir = explosionHits[i].transform.position - transform.position;
                     hitDir = hitDir.normalized;
 
-                    enemy.SetDeathDirection(hitDir, 15.0f);
+                    enemy.SetDeathDirection(hitDir, 25.0f);
                 }
 
 

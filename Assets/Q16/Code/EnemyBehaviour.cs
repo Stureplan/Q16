@@ -51,7 +51,9 @@ public class EnemyBehaviour : MonoBehaviour
         int chunks = Stats.info.timesLoaded * 3;
         chunkPS.Emit(10 + chunks);
 
-        Instantiate(enemyGibs, transform.position, transform.rotation);
+        GameObject go = (GameObject)Instantiate(enemyGibs, transform.position, transform.rotation);
+        ThrowGibs tg = go.GetComponent<ThrowGibs>();
+        tg.Throw(deathDirection);
     }
 
     public void SetPlayer(Transform trans)

@@ -8,7 +8,7 @@ public class ThrowGibs : MonoBehaviour
     float bForce;
     float uForce;
 
-    void Start ()
+    public void Throw(Vector3 dir)
     {
 
         rbs = GetComponentsInChildren<Rigidbody>();
@@ -16,13 +16,12 @@ public class ThrowGibs : MonoBehaviour
         for (int i = 0; i < rbs.Length; i++)
         {
             bForce = Random.Range(1.0f, 7.5f);
-            uForce = Random.Range(1.0f, 7.5f);
+            uForce = Random.Range(5.0f, 7.5f);
 
-            rbs[i].AddForce(-rbs[i].transform.forward * bForce, ForceMode.Impulse);
-            rbs[i].AddForce(Vector3.up * uForce, ForceMode.Impulse);
+            //rbs[i].AddForce(-rbs[i].transform.forward * bForce, ForceMode.Impulse);
+            rbs[i].AddForce(Utility.RandomVector3(dir, -rbs[i].transform.forward) * bForce, ForceMode.Impulse);
+            rbs[i].AddForce(transform.up * uForce, ForceMode.Impulse);
             rbs[i].AddTorque(Utility.RandomVector3() * 5.0f, ForceMode.Impulse);
         }
-
-
-	}
+    }
 }

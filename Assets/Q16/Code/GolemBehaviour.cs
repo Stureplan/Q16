@@ -19,6 +19,7 @@ public class GolemBehaviour : EnemyBehaviour
     public GameObject explosion;
 	public GameObject shot;
 	Transform hand;
+    AxeBehaviour axe;
     Cooldown shootTimer;
 	Animator anim;
 
@@ -41,6 +42,7 @@ public class GolemBehaviour : EnemyBehaviour
         forces = Vector3.zero;
 
 		hand = transform.Find ("hips/neck/arm_r/elbow_r/hand_r");
+        axe = GetComponentInChildren<AxeBehaviour>();
 		anim = GetComponent<Animator>();
 
         shootTimer = new Cooldown(Random.Range(4.0f, 6.0f));
@@ -128,7 +130,7 @@ public class GolemBehaviour : EnemyBehaviour
         //TODO: Change this to a timer instead, way safer for slow computers
         if (number % 20 == 0)
         {
-            if (dist < 3.0f && dot > 0.5f)
+            if (dist < 3.0f && dot > 0.7f)
             {
                 //Chop
                 GoToState(STATE.CHOPPING);
@@ -182,6 +184,11 @@ public class GolemBehaviour : EnemyBehaviour
         agent.velocity = Vector3.zero;
     }
 
+    public void ActivateAxe()
+    {
+        axe.ActivateAxe();
+    }
+
     void Shoot()
     {
         if (shootTimer.ActionReady())
@@ -212,7 +219,7 @@ public class GolemBehaviour : EnemyBehaviour
         {
             anim.SetTrigger("tStagger");
         }
-
+        
         agent.ResetPath();
         agent.velocity = Vector3.zero;
     }

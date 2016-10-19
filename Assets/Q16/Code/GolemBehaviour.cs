@@ -8,7 +8,8 @@ public class GolemBehaviour : EnemyBehaviour
         IDLE,
         WALKING,
         CHOPPING,
-        SHOOTING
+        SHOOTING,
+        STAGGERING
     }
 
     STATE CURRENT_STATE;
@@ -97,6 +98,10 @@ public class GolemBehaviour : EnemyBehaviour
             case STATE.SHOOTING:
                 Shoot();
                 break;
+
+            case STATE.STAGGERING:
+                Stagger();
+                break;
         }
     }
 
@@ -177,11 +182,6 @@ public class GolemBehaviour : EnemyBehaviour
         agent.velocity = Vector3.zero;
     }
 
-    public void GoToState(STATE toState)
-    {
-        CURRENT_STATE = toState;
-    }
-
     void Shoot()
     {
         if (shootTimer.ActionReady())
@@ -204,6 +204,22 @@ public class GolemBehaviour : EnemyBehaviour
         Quaternion rot = Quaternion.LookRotation(player.transform.position - hand.position);
         Instantiate(shot, hand.position, rot);
         cTimesShot++;
+    }
+
+    void Stagger()
+    {
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Stagger"))
+        {
+            anim.SetTrigger("tStagger");
+        }
+
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
+    }
+
+    public void GoToState(STATE toState)
+    {
+        CURRENT_STATE = toState;
     }
 
     void Ragdoll()
@@ -264,7 +280,8 @@ public class GolemBehaviour : EnemyBehaviour
     public override void Damage(int amt)
     {
         health -= amt;
-        //TODO: Stagger anim
+        //TODO: Find player OR "target" (sender, should be a parameter)
+        GoToState(STATE.STAGGERING);
     }
 
     public override void Push(Vector3 dir, float force)

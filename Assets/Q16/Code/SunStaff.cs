@@ -125,9 +125,9 @@ public class SunStaff : Weapon
                 enemy.SetDeathDirection(dir, 10.0f);
             }
 
-            if (hit.collider.tag == "World")
+            if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
             {
-
+                //TODO: Spawn particles
             }
 
             if (Physics.Raycast(hit.point, Vector3.Reflect(dir, hit.normal), out hit2))

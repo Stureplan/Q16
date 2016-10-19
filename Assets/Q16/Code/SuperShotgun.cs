@@ -115,7 +115,7 @@ public class SuperShotgun : Weapon
                     fx.SpawnImpactPS(hit.transform.position);
                 }
 
-                else if (hit.collider.tag == "World")
+                else if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
                 {
 
                     psWorld.Emit(5);

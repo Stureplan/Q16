@@ -53,7 +53,7 @@ public class GrenadeBehaviour : MonoBehaviour
             Explode();
         }
 
-        if (other.gameObject.tag == "World")
+        if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
         {
             //We hit World (or something that doesn't explode on impact)
             return;

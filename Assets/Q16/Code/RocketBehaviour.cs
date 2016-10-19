@@ -50,7 +50,7 @@ public class RocketBehaviour : MonoBehaviour {
 			Destroy (this.gameObject);
 		}
 
-		if (other.gameObject.tag == "World")
+		if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
 		{
 			EmitParticles (pts[0]);
 			Instantiate (explosion, transform.position, Quaternion.identity);

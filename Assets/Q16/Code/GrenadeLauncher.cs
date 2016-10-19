@@ -24,7 +24,7 @@ public class GrenadeLauncher : Weapon
         cooldown = new Cooldown(CD, false);
         index = 2;
 
-        animations.Stop();
+        //animations.Stop();
     }
 
     void OnDisable()

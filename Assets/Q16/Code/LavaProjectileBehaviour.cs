@@ -55,7 +55,7 @@ public class LavaProjectileBehaviour : MonoBehaviour
             }
         }
 
-        if (other.gameObject.tag == "World")
+        if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
         {
             Instantiate(fireHitPrefab, transform.position, Quaternion.LookRotation(other.contacts[0].normal), transform);
         }

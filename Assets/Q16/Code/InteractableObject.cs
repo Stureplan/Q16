@@ -91,6 +91,11 @@ public class InteractableObject : MonoBehaviour
         StartCoroutine(IEMove(aTransformToMove.position, aTransformToMove.position + aPositionMove, aDistancePerSecondsMove));
     }
 
+    void Rotate()
+    {
+
+    }
+
     IEnumerator IEMove(Vector3 a, Vector3 b, float distance)
     {
 
@@ -116,6 +121,11 @@ public class InteractableObject : MonoBehaviour
 
 
         //done
+    }
+
+    IEnumerator IERotate()
+    {
+        yield return null;
     }
 }
 
@@ -222,7 +232,9 @@ public class InteractableObjectEditor : Editor
     
     void CustomActionGizmos(ACTION_TYPE type)
     {
-        switch(type)
+        ClearGizmos();
+
+        switch (type)
         {
             case ACTION_TYPE.MOVE:
                 MoveGizmos();
@@ -230,7 +242,7 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.ROTATE:
                 RotateGizmos();
-               break;
+                break;
         }
     }
 
@@ -264,7 +276,6 @@ public class InteractableObjectEditor : Editor
 
             if (updatedFrames % 120 == 0) iObjectMesh = iObject.GetComponent<MeshFilter>().sharedMesh;
             Graphics.DrawMesh(iObjectMesh, tPos, iObject.transform.rotation, editorMat, 0);
-            EditorUtility.SetDirty(iObjectMesh);
         }
     }
 
@@ -311,6 +322,11 @@ public class InteractableObjectEditor : Editor
             Handles.color = new Vector4(1.0f, 0.0f, 0.0f, 0.5f);
             Handles.ConeCap(0, right, Quaternion.LookRotation((right - pos).normalized), 0.1f);
         }
+    }
+
+    void ClearGizmos()
+    {
+        EditorUtility.SetDirty(target);
     }
 
     void HideAndClearVariables()

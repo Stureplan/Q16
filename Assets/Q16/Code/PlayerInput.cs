@@ -257,7 +257,7 @@ public class PlayerInput : MonoBehaviour
             AddForce(dir, 15.0f);
         }
 
-        if (col.tag == "InteractableTrigger")
+        if (col.tag == "Interactable")
         {
             InteractableObject iObject = col.GetComponent<InteractableObject>();
 

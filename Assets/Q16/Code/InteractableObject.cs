@@ -28,8 +28,6 @@ public class InteractableObject : MonoBehaviour
     public Vector3 aPositionMove;
     public bool aSnapMove = false;
     public float aDistancePerSecondsMove;
-    // MOVE AT CONSTANT SPEED....V
-    // transform.position = Vector3.MoveTowards(transform.position, v3TargetPosition, maxDistPerSecond * Time.deltaTime);
 
 
     //FOR ROTATE
@@ -131,10 +129,8 @@ public class InteractableObjectEditor : Editor
 
     void OnEnable()
     {
-        iObject = target as InteractableObject;
-
         //Setup
-        //editorMat = Resources.Load("Editor/TransparentEditorMesh.mat", typeof(Material)) as Material;
+        iObject = target as InteractableObject;
         editorMat = (Material)AssetDatabase.LoadAssetAtPath("Assets/Resources/Editor/TransparentEditorMesh.mat", typeof(Material));
 
 

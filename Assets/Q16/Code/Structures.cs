@@ -14,5 +14,6 @@ public enum ACTION_TYPE
     MOVE,
     ROTATE,
     HIDE,
-    SHOW
+    SHOW,
+    CUSTOM
 }

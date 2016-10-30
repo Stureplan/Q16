@@ -25,4 +25,13 @@ public static class Utility
 
         return ret;
     }
+
+    public static Vector3 RoundVector3(Vector3 vec)
+    {
+        vec.x = Mathf.RoundToInt(vec.x);
+        vec.y = Mathf.RoundToInt(vec.y);
+        vec.z = Mathf.RoundToInt(vec.z);
+
+        return vec;
+    }
 }

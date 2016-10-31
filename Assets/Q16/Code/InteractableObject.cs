@@ -34,7 +34,7 @@ public class InteractableObject : MonoBehaviour
     public Transform aTransformToRotate;
     public Quaternion aRotationRotate = Quaternion.identity;
     public Vector3 aAnglesToRotate;
-    public float aAnglesPerSecondRotate;
+    public float aDurationRotate;
     // ROTATE...V
     // float step = aAnglesPerSecondRotate * Time.deltaTime;
     // transform.rotation = Quaternion.RotateTowards(transform.rotation, target.rotation, step);
@@ -63,6 +63,7 @@ public class InteractableObject : MonoBehaviour
                     break;
 
                 case ACTION_TYPE.ROTATE:
+                    Rotate();
                     break;
 
                 case ACTION_TYPE.HIDE:
@@ -88,15 +89,16 @@ public class InteractableObject : MonoBehaviour
             aPositionMove = Utility.RoundVector3(aPositionMove);
         }
 
-        StartCoroutine(IEMove(aTransformToMove.position, aTransformToMove.position + aPositionMove, aDistancePerSecondsMove));
+        StartCoroutine(IEMove(aTransformToMove.position + aPositionMove, aDistancePerSecondsMove));
     }
 
     void Rotate()
     {
 
+        StartCoroutine(IERotate(aRotationRotate, aDurationRotate));
     }
 
-    IEnumerator IEMove(Vector3 a, Vector3 b, float distance)
+    IEnumerator IEMove(Vector3 to, float distance)
     {
 
 
@@ -113,7 +115,7 @@ public class InteractableObject : MonoBehaviour
         {
             t += Time.deltaTime;
 
-            aTransformToMove.position = Vector3.MoveTowards(aTransformToMove.position, b, delta);
+            aTransformToMove.position = Vector3.MoveTowards(aTransformToMove.position, to, delta);
 
             yield return null;
         }
@@ -123,9 +125,23 @@ public class InteractableObject : MonoBehaviour
         //done
     }
 
-    IEnumerator IERotate()
+    IEnumerator IERotate(Quaternion to, float duration)
     {
-        yield return null;
+        float maxAngles = Mathf.Max(Mathf.Abs(aAnglesToRotate.x), Mathf.Abs(aAnglesToRotate.y), Mathf.Abs(aAnglesToRotate.z));
+
+        float t = 0.0f;
+        
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            
+            float step = (maxAngles * Time.deltaTime) / duration;
+
+            aTransformToRotate.rotation = Quaternion.RotateTowards(aTransformToRotate.rotation, aRotationRotate, step);
+
+            yield return null;
+        }
+
     }
 }
 
@@ -213,9 +229,9 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.ROTATE:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aTransformToRotate"), new GUIContent("Rotate Object"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("aRotationRotate"), new GUIContent("Rotate Object"));
+                //EditorGUILayout.PropertyField(serializedObject.FindProperty("aRotationRotate"), new GUIContent("Rotation"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aAnglesToRotate"), new GUIContent("Angles to Rotate"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("aAnglesPerSecondRotate"), new GUIContent("Angles per Second"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aDurationRotate"), new GUIContent("Rotation Duration"));
                 break;
 
             case ACTION_TYPE.HIDE:
@@ -283,8 +299,7 @@ public class InteractableObjectEditor : Editor
     {
         if (iObject.aTransformToRotate != null)
         {
-            Quaternion rot;
-            rot = Quaternion.Euler(iObject.aAnglesToRotate);
+            Quaternion rot = Quaternion.Euler(iObject.aAnglesToRotate);
 
 
 
@@ -303,24 +318,40 @@ public class InteractableObjectEditor : Editor
             up = rot * iObject.aTransformToRotate.up + pos;
             right = rot * iObject.aTransformToRotate.right + pos;
 
+            iObject.aRotationRotate = rot;
 
-            /*forward = t.position + t.forward;
-            up = t.position + t.up;
-            right = t.position + t.right;
-            */
+
             Handles.color = Color.white;
             Handles.DrawLine(pos, forward);
             Handles.DrawLine(pos, up);
             Handles.DrawLine(pos, right);
 
-            Handles.color = new Vector4(0.0f, 0.0f, 1.0f, 0.5f);
-            Handles.ConeCap(0, forward, Quaternion.LookRotation((forward - pos).normalized), 0.1f);
 
-            Handles.color = new Vector4(0.0f, 1.0f, 0.0f, 0.5f);
-            Handles.ConeCap(0, up, Quaternion.LookRotation((up - pos).normalized), 0.1f);
 
-            Handles.color = new Vector4(1.0f, 0.0f, 0.0f, 0.5f);
+            Handles.color = new Vector4(1.0f, 0.0f, 0.0f, 0.25f);
             Handles.ConeCap(0, right, Quaternion.LookRotation((right - pos).normalized), 0.1f);
+            Handles.DrawSolidArc(pos, rot * iObject.aTransformToRotate.forward, rot * iObject.aTransformToRotate.right, 90.0f, 0.25f);
+
+
+            Handles.color = new Vector4(0.0f, 1.0f, 0.0f, 0.25f);
+            Handles.ConeCap(0, up, Quaternion.LookRotation((up - pos).normalized), 0.1f);
+            Handles.DrawSolidArc(pos, rot * iObject.aTransformToRotate.right, rot * iObject.aTransformToRotate.up, 90.0f, 0.25f);
+
+
+            Handles.color = new Vector4(0.0f, 0.0f, 1.0f, 0.25f);
+            Handles.ConeCap(0, forward, Quaternion.LookRotation((forward - pos).normalized), 0.1f);
+            Handles.DrawSolidArc(pos, rot * iObject.aTransformToRotate.up, rot * iObject.aTransformToRotate.forward, 90.0f, 0.25f);
+
+
+            
+
+
+            Handles.color = Color.white;
+
+            Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.forward, rot * iObject.aTransformToRotate.right, 90.0f, 0.25f);
+            Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.right, rot * iObject.aTransformToRotate.up, 90.0f, 0.25f);
+            Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.up, rot * iObject.aTransformToRotate.forward, 90.0f, 0.25f);
+
         }
     }
 

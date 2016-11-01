@@ -47,12 +47,15 @@ public class InteractableObject : MonoBehaviour
 
     //FOR CUSTOM
     public ActionObject aCustom;
+
+    //FOR EXTRA ACTIONS
+    public ActionObject[] aExtraCustomActions;
     /* ------------------------------------------------------ */
 
     private bool activated = false;
 
 
-    public void Interact(Transform sender)
+    public void Interact(SenderInfo sender)
     {
         if (!activated)
         {
@@ -67,9 +70,11 @@ public class InteractableObject : MonoBehaviour
                     break;
 
                 case ACTION_TYPE.HIDE:
+                    aHide.gameObject.SetActive(false);
                     break;
 
                 case ACTION_TYPE.SHOW:
+                    aShow.gameObject.SetActive(true);
                     break;
 
                 case ACTION_TYPE.CUSTOM:
@@ -77,6 +82,13 @@ public class InteractableObject : MonoBehaviour
                     break;
             }
 
+            if (aExtraCustomActions != null && aExtraCustomActions.Length > 0)
+            {
+                for (int i = 0; i < aExtraCustomActions.Length; i++)
+                {
+                    aExtraCustomActions[i].Action(sender);
+                }
+            }
             activated = true;
         }
 
@@ -187,7 +199,7 @@ public class InteractableObjectEditor : Editor
 
         ShowInteractionGUI(iObject.iType);
         ShowActionGUI(iObject.aType);
-
+        
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -235,17 +247,24 @@ public class InteractableObjectEditor : Editor
                 break;
 
             case ACTION_TYPE.HIDE:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aHide"), new GUIContent("Hide Object"));
+
                 break;
 
             case ACTION_TYPE.SHOW:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aShow"), new GUIContent("Show Object"));
+
                 break;
                 
             case ACTION_TYPE.CUSTOM:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aCustom"), new GUIContent("Custom Code"));
                 break;
         }
+
+        GUILayout.Space(15.0f);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("aExtraCustomActions"), new GUIContent("Extra Actions"));
     }
-    
+
     void CustomActionGizmos(ACTION_TYPE type)
     {
         ClearGizmos();

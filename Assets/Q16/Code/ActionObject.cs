@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ActionObject : MonoBehaviour
 {
-    public virtual void Action(Transform sender)
+    public virtual void Action(SenderInfo sender)
     {
         //TODO: sender should not be Transform
         //but should be Character or

@@ -256,13 +256,6 @@ public class PlayerInput : MonoBehaviour
             dir.y = 0.5f;
             AddForce(dir, 15.0f);
         }
-
-        if (col.tag == "Interactable")
-        {
-            InteractableObject iObject = col.GetComponent<InteractableObject>();
-
-            iObject.Interact(transform);
-        }
     }
 
     public void Jump(float strength)

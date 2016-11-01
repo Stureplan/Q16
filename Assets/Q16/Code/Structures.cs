@@ -17,3 +17,17 @@ public enum ACTION_TYPE
     SHOW,
     CUSTOM
 }
+
+public enum SENDER_TYPE
+{
+    PLAYER,
+    ENEMY,
+    OBJECT
+}
+
+public struct SenderInfo
+{
+    public Transform s_Transform;
+    public SENDER_TYPE s_Type;
+    public string s_Tag;
+}

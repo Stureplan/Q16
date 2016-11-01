@@ -113,7 +113,6 @@ public class InteractableObject : MonoBehaviour
     IEnumerator IEMove(Vector3 to, float distance)
     {
 
-
         //here goes repeatable code?
         /*while(true)
         {
@@ -150,7 +149,7 @@ public class InteractableObject : MonoBehaviour
             float step = (maxAngles * Time.deltaTime) / duration;
 
             aTransformToRotate.rotation = Quaternion.RotateTowards(aTransformToRotate.rotation, aRotationRotate, step);
-
+            
             yield return null;
         }
 

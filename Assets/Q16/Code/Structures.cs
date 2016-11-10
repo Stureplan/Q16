@@ -25,6 +25,13 @@ public enum SENDER_TYPE
     OBJECT
 }
 
+public enum SPLASH_TYPE
+{
+    SMALL,
+    MEDIUM,
+    LARGE
+}
+
 public struct SenderInfo
 {
     public Transform s_Transform;

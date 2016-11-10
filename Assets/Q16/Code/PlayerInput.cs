@@ -85,13 +85,6 @@ public class PlayerInput : MonoBehaviour
 
         Vector3 gunSwayForce = movement;
 
-        //if(forces.y > 0.0f)
-        if(!cc.isGrounded)
-        {
-            gunSwayForce = movement + (forces * 20.0f);
-            //gunSwayForce.y = forces.y;
-        }
-
         gunSway.Sway(gunSwayForce, new Vector2(h, v));
 
         movement = transform.TransformDirection(movement);
@@ -99,13 +92,20 @@ public class PlayerInput : MonoBehaviour
 
         if (!cc.isGrounded)
         {
-            friction = 1.0f;
+            gunSwayForce = movement + (forces * 20.0f);
+            friction = 0.8f;
         }
         else
         {
             //friction += 15.0f * Time.deltaTime;
         }
 
+
+        //if we're in air---v
+        if (!cc.isGrounded)
+        {
+            movement = movement / 2.0f;
+        }
 
         Vector3 finalMove = movement + forces;
         cc.Move(finalMove * Time.deltaTime);
@@ -260,7 +260,13 @@ public class PlayerInput : MonoBehaviour
 
     public void Jump(float strength)
     {
-        forces.y = strength;
+        //original
+        //forces.y = strength;
+
+
+        Vector3 v = cc.velocity;
+        v.y = strength;
+        AddForce(v, 15.0f);
     }
 
     public void AddForce(Vector3 dir, float force)

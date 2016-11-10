@@ -121,6 +121,10 @@ public class SuperShotgun : Weapon
                     psWorld.Emit(5);
                 }
 
+                else if (hit.collider.tag == "Water")
+                {
+                    hit.collider.GetComponent<WaterBehaviour>().Splash(hit.point, SPLASH_TYPE.SMALL);
+                }
 
 
             }

@@ -332,9 +332,9 @@ public class InteractableObjectEditor : Editor
             
             pos = iObject.aTransformToRotate.position;
 
-            forward = rot * iObject.aTransformToRotate.forward + pos;
-            up = rot * iObject.aTransformToRotate.up + pos;
-            right = rot * iObject.aTransformToRotate.right + pos;
+            forward = rot * iObject.aTransformToRotate.forward  + pos;
+            up      = rot * iObject.aTransformToRotate.up       + pos;
+            right   = rot * iObject.aTransformToRotate.right    + pos;
 
             iObject.aRotationRotate = rot;
 
@@ -370,6 +370,9 @@ public class InteractableObjectEditor : Editor
             Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.right, rot * iObject.aTransformToRotate.up, 90.0f, 0.25f);
             Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.up, rot * iObject.aTransformToRotate.forward, 90.0f, 0.25f);
 
+
+            if (updatedFrames % 120 == 0) iObjectMesh = iObject.GetComponent<MeshFilter>().sharedMesh;
+            Graphics.DrawMesh(iObjectMesh, pos, rot, editorMat, 0);
         }
     }
 

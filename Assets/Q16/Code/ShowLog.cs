@@ -16,6 +16,7 @@ public class ShowLog : MonoBehaviour
 	
 	void Update ()
     {
+		//TODO: decrease framerate on this update!
         if (currentMessage != MessageLog.GetLastMessageID())
         {
             string lastMsg = MessageLog.GetLastMessage();
@@ -29,5 +30,9 @@ public class ShowLog : MonoBehaviour
     }
 
 
-
+	public void MiddleMessage(string msg, float seconds)
+	{
+		//TODO: Show message on middle of screen for (seconds)
+			//if message already showing, add another message below/above
+	}
 }

@@ -49,11 +49,11 @@ public class Inventory : MonoBehaviour
 
             currentWeapon.PlayAnimation("WeaponSwitch");
 
-            MessageLog.AddMessage("Changed weapon to " + currentWeapon.name);
+            MessageLog.Notify("Changed weapon to " + currentWeapon.name);
         }
         else
         {
-            MessageLog.AddMessage("No weapon in slot " + index + ".");
+            MessageLog.Notify("No weapon in slot " + index + ".");
         }
     }
 

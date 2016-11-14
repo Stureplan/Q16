@@ -36,8 +36,7 @@ public class EnemyBehaviour : MonoBehaviour
         chunkPS = deathFX.GetComponent<ParticleSystem>();
         mr = GetComponentInChildren<SkinnedMeshRenderer>();
     }
-
-
+    
     public virtual void Damage(int amt) { }
     public virtual void Headshot(int dmg) { }
     public virtual void Kill(int overkill) { }
@@ -56,9 +55,9 @@ public class EnemyBehaviour : MonoBehaviour
         tg.Throw(deathDirection);
     }
 
-    public void SetPlayer(Transform trans)
+    public void SetPlayer(Transform t)
     {
-        player = trans;
+        player = t;
     }
 
     public void SetDeathDirection(Vector3 dir, float power)

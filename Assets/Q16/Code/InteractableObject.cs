@@ -35,15 +35,16 @@ public class InteractableObject : MonoBehaviour
     public Quaternion aRotationRotate = Quaternion.identity;
     public Vector3 aAnglesToRotate;
     public float aDurationRotate;
-    // ROTATE...V
-    // float step = aAnglesPerSecondRotate * Time.deltaTime;
-    // transform.rotation = Quaternion.RotateTowards(transform.rotation, target.rotation, step);
 
     //FOR HIDE
     public Transform aHide;
 
     //FOR SHOW
     public Transform aShow;
+
+    //FOR SPAWN ENEMY
+    public GameObject aEnemyPrefab;
+    public Transform aEnemySpawnPoint;
 
     //FOR CUSTOM
     public ActionObject aCustom;
@@ -77,6 +78,10 @@ public class InteractableObject : MonoBehaviour
                     aShow.gameObject.SetActive(true);
                     break;
 
+                case ACTION_TYPE.SPAWN_ENEMY:
+                    SpawnEnemy();
+                    break;
+
                 case ACTION_TYPE.CUSTOM:
                     aCustom.Action(sender);
                     break;
@@ -106,8 +111,14 @@ public class InteractableObject : MonoBehaviour
 
     void Rotate()
     {
-
         StartCoroutine(IERotate(aRotationRotate, aDurationRotate));
+    }
+
+    void SpawnEnemy()
+    {
+        GameObject e = (GameObject)Instantiate(aEnemyPrefab, aEnemySpawnPoint.position, aEnemySpawnPoint.rotation);
+        EnemyBehaviour eb = e.GetComponent<EnemyBehaviour>();
+        eb.SetPlayer(GameObject.Find("Guy").transform);
     }
 
     IEnumerator IEMove(Vector3 to, float distance)
@@ -160,7 +171,9 @@ public class InteractableObject : MonoBehaviour
 public class InteractableObjectEditor : Editor
 {
     InteractableObject iObject;
-    Mesh iObjectMesh;
+    MeshFilter iObjectMesh;
+    SkinnedMeshRenderer[] iObjectMeshes;
+    
     Material editorMat;
     int updatedFrames = 0;
 
@@ -170,12 +183,12 @@ public class InteractableObjectEditor : Editor
         iObject = target as InteractableObject;
         editorMat = (Material)AssetDatabase.LoadAssetAtPath("Assets/Resources/Editor/TransparentEditorMesh.mat", typeof(Material));
 
-
+        
     }
 
     void OnSceneGUI()
     {
-        if (iObject)
+        if (iObject != null)
         {
             CustomActionGizmos(iObject.aType);
             updatedFrames++;
@@ -240,7 +253,6 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.ROTATE:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aTransformToRotate"), new GUIContent("Rotate Object"));
-                //EditorGUILayout.PropertyField(serializedObject.FindProperty("aRotationRotate"), new GUIContent("Rotation"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aAnglesToRotate"), new GUIContent("Angles to Rotate"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aDurationRotate"), new GUIContent("Rotation Duration"));
                 break;
@@ -254,6 +266,12 @@ public class InteractableObjectEditor : Editor
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aShow"), new GUIContent("Show Object"));
 
                 break;
+
+            case ACTION_TYPE.SPAWN_ENEMY:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemyPrefab"), new GUIContent("Enemy Prefab"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawnPoint"), new GUIContent("Spawn Point"));
+                
+                break;
                 
             case ACTION_TYPE.CUSTOM:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aCustom"), new GUIContent("Custom Code"));
@@ -261,7 +279,7 @@ public class InteractableObjectEditor : Editor
         }
 
         GUILayout.Space(15.0f);
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("aExtraCustomActions"), new GUIContent("Extra Actions"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("aExtraCustomActions"), new GUIContent("Extra Actions"), true);
     }
 
     void CustomActionGizmos(ACTION_TYPE type)
@@ -276,6 +294,10 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.ROTATE:
                 RotateGizmos();
+                break;
+
+            case ACTION_TYPE.SPAWN_ENEMY:
+                SpawnEnemyGizmos();
                 break;
         }
     }
@@ -307,9 +329,12 @@ public class InteractableObjectEditor : Editor
             Handles.DrawLine(fPos, tPos);
             Handles.CircleCap(0, tPos, rot, 0.25f);
 
-
-            if (updatedFrames % 120 == 0) iObjectMesh = iObject.GetComponent<MeshFilter>().sharedMesh;
-            Graphics.DrawMesh(iObjectMesh, tPos, iObject.transform.rotation, editorMat, 0);
+            
+            iObjectMesh = iObject.GetComponent<MeshFilter>();
+            if (iObjectMesh != null)
+            {
+                Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.transform.rotation, editorMat, 0);
+            }
         }
     }
 
@@ -370,9 +395,37 @@ public class InteractableObjectEditor : Editor
             Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.right, rot * iObject.aTransformToRotate.up, 90.0f, 0.25f);
             Handles.DrawWireArc(pos, rot * iObject.aTransformToRotate.up, rot * iObject.aTransformToRotate.forward, 90.0f, 0.25f);
 
+            iObjectMesh = iObject.GetComponent<MeshFilter>();
+            if (iObjectMesh != null)
+            {
+                Graphics.DrawMesh(iObjectMesh.sharedMesh, pos, rot, editorMat, 0);
+            }
+        }
+    }
 
-            if (updatedFrames % 120 == 0) iObjectMesh = iObject.GetComponent<MeshFilter>().sharedMesh;
-            Graphics.DrawMesh(iObjectMesh, pos, rot, editorMat, 0);
+    void SpawnEnemyGizmos()
+    {
+        Vector3 pos;
+        Vector3 forward;
+        Quaternion rot;
+
+        pos = iObject.aEnemySpawnPoint.position;
+        rot = iObject.aEnemySpawnPoint.rotation;
+        forward = iObject.aEnemySpawnPoint.forward;
+
+        Handles.color = Color.white;
+        Handles.DrawLine(pos, pos + forward);
+        Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
+        Handles.CircleCap(0, pos, Quaternion.LookRotation(iObject.aEnemySpawnPoint.up), 0.5f);
+
+
+        iObjectMeshes = iObject.aEnemyPrefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+        if (iObjectMeshes != null)
+        {
+            for (int i = 0; i < iObjectMeshes.Length; i++)
+            {
+                Graphics.DrawMesh(iObjectMeshes[i].sharedMesh, pos, rot, editorMat, 0);
+            }
         }
     }
 

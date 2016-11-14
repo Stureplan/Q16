@@ -15,6 +15,7 @@ public enum ACTION_TYPE
     ROTATE,
     HIDE,
     SHOW,
+    SPAWN_ENEMY,
     CUSTOM
 }
 

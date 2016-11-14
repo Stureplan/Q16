@@ -3,26 +3,28 @@ using System.Collections;
 
 public static class MessageLog
 {
-    static string[] Messages;
+    static string[] ConsoleMessages;
+    static UILog uiLog;
 
-    public static void InitializeLog()
+    public static void InitializeLog(UILog log)
     {
-        Messages = new string[0];
+        ConsoleMessages = new string[0];
+        uiLog = log;
     }
 
-    public static void AddMessage(string msg)
+    public static void AddToConsole(string msg)
     {
-        int lastMsg = Messages.Length + 1;
-        Messages = new string[lastMsg];
+        int lastMsg = ConsoleMessages.Length + 1;
+        ConsoleMessages = new string[lastMsg];
 
-        Messages[lastMsg-1] = msg;
+        ConsoleMessages[lastMsg-1] = msg;
     }
 
     public static string GetLastMessage()
     {
-        if (Messages.Length > 0)
+        if (ConsoleMessages.Length > 0)
         {
-            return Messages[Messages.Length - 1];
+            return ConsoleMessages[ConsoleMessages.Length - 1];
             
         }
         else
@@ -33,20 +35,32 @@ public static class MessageLog
 
     public static string[] GetLastMessages(int amt)
     {
-        if (Messages.Length >= amt)
+        if (ConsoleMessages.Length >= amt)
         {
             string[] msgs = new string[amt];
             for (int i = 0; i < amt; i++)
             {
-                msgs[i] = Messages[Messages.Length - i];
+                msgs[i] = ConsoleMessages[ConsoleMessages.Length - i];
             }
         }
 
         return null;
     }
-
+    
     public static int GetLastMessageID()
     {
-        return Messages.Length;
+        return ConsoleMessages.Length;
+    }
+
+    public static void Notify(string msg)
+    {
+        uiLog.Notify(msg);
+        AddToConsole(msg);
+    }
+
+    public static void Message(string msg)
+    {
+        uiLog.Message(msg);
+        AddToConsole(msg);
     }
 }

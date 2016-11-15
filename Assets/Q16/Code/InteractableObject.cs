@@ -43,8 +43,7 @@ public class InteractableObject : MonoBehaviour
     public Transform aShow;
 
     //FOR SPAWN ENEMY
-    public GameObject aEnemyPrefab;
-    public Transform aEnemySpawnPoint;
+    public EnemySpawn[] aEnemySpawns;
 
     //FOR CUSTOM
     public ActionObject aCustom;
@@ -116,9 +115,9 @@ public class InteractableObject : MonoBehaviour
 
     void SpawnEnemy()
     {
-        GameObject e = (GameObject)Instantiate(aEnemyPrefab, aEnemySpawnPoint.position, aEnemySpawnPoint.rotation);
-        EnemyBehaviour eb = e.GetComponent<EnemyBehaviour>();
-        eb.SetPlayer(GameObject.Find("Guy").transform);
+        //GameObject e = (GameObject)Instantiate(aEnemyPrefab, aEnemySpawnPoint.position, aEnemySpawnPoint.rotation);
+        //EnemyBehaviour eb = e.GetComponent<EnemyBehaviour>();
+        //eb.SetPlayer(GameObject.Find("Guy").transform);
     }
 
     IEnumerator IEMove(Vector3 to, float distance)
@@ -268,9 +267,11 @@ public class InteractableObjectEditor : Editor
                 break;
 
             case ACTION_TYPE.SPAWN_ENEMY:
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemyPrefab"), new GUIContent("Enemy Prefab"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawnPoint"), new GUIContent("Spawn Point"));
-                
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawns"), new GUIContent("Enemy Spawns"), true);
+                if (GUILayout.Button("Add Enemy Spawn"))
+                {
+                    EnemySpawnPopup.Display();
+                }
                 break;
                 
             case ACTION_TYPE.CUSTOM:
@@ -405,26 +406,31 @@ public class InteractableObjectEditor : Editor
 
     void SpawnEnemyGizmos()
     {
-        Vector3 pos;
-        Vector3 forward;
-        Quaternion rot;
-
-        pos = iObject.aEnemySpawnPoint.position;
-        rot = iObject.aEnemySpawnPoint.rotation;
-        forward = iObject.aEnemySpawnPoint.forward;
-
-        Handles.color = Color.white;
-        Handles.DrawLine(pos, pos + forward);
-        Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
-        Handles.CircleCap(0, pos, Quaternion.LookRotation(iObject.aEnemySpawnPoint.up), 0.5f);
-
-
-        iObjectMeshes = iObject.aEnemyPrefab.GetComponentsInChildren<SkinnedMeshRenderer>();
-        if (iObjectMeshes != null)
+        for (int i = 0; i < iObject.aEnemySpawns.Length; i++)
         {
-            for (int i = 0; i < iObjectMeshes.Length; i++)
+            Vector3 pos;
+            Vector3 forward;
+            Vector3 up;
+            Quaternion rot;
+
+            pos = iObject.aEnemySpawns[i].e_Point.position;
+            rot = iObject.aEnemySpawns[i].e_Point.rotation;
+            forward = iObject.aEnemySpawns[i].e_Point.forward;
+            up = iObject.aEnemySpawns[i].e_Point.up;
+
+            Handles.color = Color.white;
+            Handles.DrawLine(pos, pos + forward);
+            Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
+            Handles.CircleCap(0, pos, Quaternion.LookRotation(up), 0.5f);
+
+
+            iObjectMeshes = iObject.aEnemySpawns[i].e_Prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+            if (iObjectMeshes != null)
             {
-                Graphics.DrawMesh(iObjectMeshes[i].sharedMesh, pos, rot, editorMat, 0);
+                for (int j = 0; j < iObjectMeshes.Length; j++)
+                {
+                    Graphics.DrawMesh(iObjectMeshes[j].sharedMesh, pos, rot, editorMat, 0);
+                }
             }
         }
     }

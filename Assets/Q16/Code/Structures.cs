@@ -45,5 +45,6 @@ public struct SenderInfo
 public struct EnemySpawn
 {
     public GameObject e_Prefab;
-    public Transform e_Point;
+    public Transform e_Transform;
+    public Vector3 e_Point;
 }

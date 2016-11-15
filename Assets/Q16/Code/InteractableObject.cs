@@ -50,10 +50,10 @@ public class InteractableObject : MonoBehaviour
 
     //FOR EXTRA ACTIONS
     public ActionObject[] aExtraCustomActions;
+    public int aExtraCustomActionsChoice;
     /* ------------------------------------------------------ */
 
     private bool activated = false;
-
 
     public void Interact(SenderInfo sender)
     {
@@ -115,9 +115,17 @@ public class InteractableObject : MonoBehaviour
 
     void SpawnEnemy()
     {
-        //GameObject e = (GameObject)Instantiate(aEnemyPrefab, aEnemySpawnPoint.position, aEnemySpawnPoint.rotation);
-        //EnemyBehaviour eb = e.GetComponent<EnemyBehaviour>();
-        //eb.SetPlayer(GameObject.Find("Guy").transform);
+        ActionSpawnEnemy[] spawns = transform.GetComponentsInChildren<ActionSpawnEnemy>();
+        SenderInfo generic_sender;
+        generic_sender.s_Tag = tag;
+        generic_sender.s_Transform = transform;
+        generic_sender.s_Type = SENDER_TYPE.OBJECT;
+
+        for (int i = 0; i < spawns.Length; i++)
+        {
+            spawns[i].Action(generic_sender);
+        }
+
     }
 
     IEnumerator IEMove(Vector3 to, float distance)
@@ -268,10 +276,45 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.SPAWN_ENEMY:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawns"), new GUIContent("Enemy Spawns"), true);
+                //EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawns.e_Point"), new GUIContent("Spawn Point"), true);
+
+                GUILayout.BeginHorizontal();
+
                 if (GUILayout.Button("Add Enemy Spawn"))
                 {
-                    EnemySpawnPopup.Display();
+                    EnemySpawnPopup.Display(iObject.gameObject, iObject);
                 }
+                if (GUILayout.Button("Remove Enemy Spawn"))
+                {
+                    if (iObject.aEnemySpawns.Length > 0)
+                    {
+                        int newSize = iObject.aEnemySpawns.Length-1;
+
+                        if (iObject.aEnemySpawns[newSize].e_Transform == null)
+                        {
+                            Debug.LogError("Transform or GameObject is missing, or link was broken.");
+                        }
+                        else
+                        {
+                            GameObject go = iObject.aEnemySpawns[newSize].e_Transform.gameObject;
+                            if (go.tag == "EnemySpawn")
+                            {
+                                DestroyImmediate(go, false);
+                            }
+                        }
+
+
+                        //GO AHEAD AND RESIZE ARRAY
+                        ArrayUtility.RemoveAt(ref iObject.aEnemySpawns, newSize);
+                    }
+                    else
+                    {
+                        Debug.LogError("Can't destroy element because the array was empty.");
+                    }
+                }
+
+                GUILayout.EndHorizontal();
+
                 break;
                 
             case ACTION_TYPE.CUSTOM:
@@ -281,8 +324,14 @@ public class InteractableObjectEditor : Editor
 
         GUILayout.Space(15.0f);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("aExtraCustomActions"), new GUIContent("Extra Actions"), true);
-    }
 
+        if (GUILayout.Button("Add Extra Action"))
+        {
+            int choice = 0;
+            string[] choices = { "One", "Two", "Three" };
+            iObject.aExtraCustomActionsChoice = EditorGUILayout.Popup(iObject.aExtraCustomActionsChoice, choices);
+        }   
+    }
     void CustomActionGizmos(ACTION_TYPE type)
     {
         ClearGizmos();
@@ -408,28 +457,31 @@ public class InteractableObjectEditor : Editor
     {
         for (int i = 0; i < iObject.aEnemySpawns.Length; i++)
         {
-            Vector3 pos;
-            Vector3 forward;
-            Vector3 up;
-            Quaternion rot;
-
-            pos = iObject.aEnemySpawns[i].e_Point.position;
-            rot = iObject.aEnemySpawns[i].e_Point.rotation;
-            forward = iObject.aEnemySpawns[i].e_Point.forward;
-            up = iObject.aEnemySpawns[i].e_Point.up;
-
-            Handles.color = Color.white;
-            Handles.DrawLine(pos, pos + forward);
-            Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
-            Handles.CircleCap(0, pos, Quaternion.LookRotation(up), 0.5f);
-
-
-            iObjectMeshes = iObject.aEnemySpawns[i].e_Prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
-            if (iObjectMeshes != null)
+            if (iObject.aEnemySpawns[i].e_Transform != null)
             {
-                for (int j = 0; j < iObjectMeshes.Length; j++)
+                Vector3 pos;
+                Vector3 forward;
+                Vector3 up;
+                Quaternion rot;
+
+                pos = iObject.aEnemySpawns[i].e_Transform.position;
+                rot = iObject.aEnemySpawns[i].e_Transform.rotation;
+                forward = iObject.aEnemySpawns[i].e_Transform.forward;
+                up = iObject.aEnemySpawns[i].e_Transform.up;
+
+                Handles.color = Color.white;
+                Handles.DrawLine(pos, pos + forward);
+                Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
+                Handles.CircleCap(0, pos, Quaternion.LookRotation(up), 0.5f);
+
+
+                iObjectMeshes = iObject.aEnemySpawns[i].e_Prefab.GetComponentsInChildren<SkinnedMeshRenderer>();
+                if (iObjectMeshes != null)
                 {
-                    Graphics.DrawMesh(iObjectMeshes[j].sharedMesh, pos, rot, editorMat, 0);
+                    for (int j = 0; j < iObjectMeshes.Length; j++)
+                    {
+                        Graphics.DrawMesh(iObjectMeshes[j].sharedMesh, pos, rot, editorMat, 0);
+                    }
                 }
             }
         }

@@ -7,6 +7,6 @@ public class MsgAction : ActionObject
 
     public override void Action(SenderInfo sender)
     {
-        MessageLog.Notify(message);
+        MessageLog.Message(sender.s_Tag + " spawned " + "Cultist");
     }
 }

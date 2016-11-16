@@ -12,6 +12,9 @@ public class ActionSpawnEnemy : ActionObject
 
     public override void Action(SenderInfo sender)
     {
-        Instantiate(prefab, transform.position, transform.rotation);
+        GameObject go = (GameObject)Instantiate(prefab, transform.position, transform.rotation);
+
+        EnemyBehaviour eb = go.GetComponent<EnemyBehaviour>();
+        eb.SetPlayer(sender.s_Transform);
     }
 }

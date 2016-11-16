@@ -15,6 +15,9 @@ public class InteractableObject : MonoBehaviour
 
     //FOR PUSH
     public Collider iColliderPush;
+
+    //FOR OPTIONS
+    public bool iPlayerExclusive;
     /* ------------------------------------------------------ */
 
 
@@ -51,12 +54,18 @@ public class InteractableObject : MonoBehaviour
     //FOR EXTRA ACTIONS
     public ActionObject[] aExtraCustomActions;
     public int aExtraCustomActionsChoice;
+
     /* ------------------------------------------------------ */
 
     private bool activated = false;
 
     public void Interact(SenderInfo sender)
     {
+        if (iPlayerExclusive && sender.s_Type != SENDER_TYPE.PLAYER)
+        {
+            return;
+        }
+
         if (!activated)
         {
             switch (aType)
@@ -78,7 +87,7 @@ public class InteractableObject : MonoBehaviour
                     break;
 
                 case ACTION_TYPE.SPAWN_ENEMY:
-                    SpawnEnemy();
+                    SpawnEnemy(sender);
                     break;
 
                 case ACTION_TYPE.CUSTOM:
@@ -113,17 +122,14 @@ public class InteractableObject : MonoBehaviour
         StartCoroutine(IERotate(aRotationRotate, aDurationRotate));
     }
 
-    void SpawnEnemy()
+    void SpawnEnemy(SenderInfo sender)
     {
         ActionSpawnEnemy[] spawns = transform.GetComponentsInChildren<ActionSpawnEnemy>();
-        SenderInfo generic_sender;
-        generic_sender.s_Tag = tag;
-        generic_sender.s_Transform = transform;
-        generic_sender.s_Type = SENDER_TYPE.OBJECT;
 
         for (int i = 0; i < spawns.Length; i++)
         {
-            spawns[i].Action(generic_sender);
+            spawns[i].SetPrefab(aEnemySpawns[i].e_Prefab);
+            spawns[i].Action(sender);
         }
 
     }
@@ -242,6 +248,8 @@ public class InteractableObjectEditor : Editor
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("iColliderPush"), new GUIContent("Push Collider"));
                 break;
         }
+
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("iPlayerExclusive"), new GUIContent("Exclusive to Player"));
     }
 
     void ShowActionGUI(ACTION_TYPE aTypeGUI)
@@ -276,7 +284,6 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.SPAWN_ENEMY:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawns"), new GUIContent("Enemy Spawns"), true);
-                //EditorGUILayout.PropertyField(serializedObject.FindProperty("aEnemySpawns.e_Point"), new GUIContent("Spawn Point"), true);
 
                 GUILayout.BeginHorizontal();
 
@@ -324,13 +331,6 @@ public class InteractableObjectEditor : Editor
 
         GUILayout.Space(15.0f);
         EditorGUILayout.PropertyField(serializedObject.FindProperty("aExtraCustomActions"), new GUIContent("Extra Actions"), true);
-
-        if (GUILayout.Button("Add Extra Action"))
-        {
-            int choice = 0;
-            string[] choices = { "One", "Two", "Three" };
-            iObject.aExtraCustomActionsChoice = EditorGUILayout.Popup(iObject.aExtraCustomActionsChoice, choices);
-        }   
     }
     void CustomActionGizmos(ACTION_TYPE type)
     {
@@ -473,6 +473,8 @@ public class InteractableObjectEditor : Editor
                 Handles.DrawLine(pos, pos + forward);
                 Handles.ConeCap(0, pos + forward, Quaternion.LookRotation(forward), 0.1f);
                 Handles.CircleCap(0, pos, Quaternion.LookRotation(up), 0.5f);
+
+                iObject.aEnemySpawns[i].e_Transform.localPosition = iObject.aEnemySpawns[i].e_Point;
 
 
                 iObjectMeshes = iObject.aEnemySpawns[i].e_Prefab.GetComponentsInChildren<SkinnedMeshRenderer>();

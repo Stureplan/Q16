@@ -66,7 +66,7 @@ public class EnemySpawnPopup : EditorWindow
         go.tag = "EnemySpawn";
         go.transform.localPosition = Vector3.zero;
 
-        go.AddComponent<ActionSpawnEnemy>().SetPrefab(selected);
+        go.AddComponent<ActionSpawnEnemy>();
 
         EnemySpawn es;
         es.e_Prefab = selected;

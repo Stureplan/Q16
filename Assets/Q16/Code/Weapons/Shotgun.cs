@@ -89,7 +89,7 @@ public class Shotgun : Weapon
                     psImpact.Emit(2);
 
                     EnemyBehaviour enemy = hit.collider.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(5);
+                    enemy.Damage(5, DAMAGE_TYPE.BUCKSHOT);
                     enemy.SetDeathDirection(dir, power);
 
 

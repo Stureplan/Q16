@@ -2,6 +2,11 @@
 using UnityEngine;
 using System.Collections;
 
+public interface IDamageable
+{
+    void DamageI(int dmg, DAMAGE_TYPE type);
+}
+
 public enum INTERACTION_TYPE
 {
     TRIGGER,
@@ -24,6 +29,15 @@ public enum SENDER_TYPE
     PLAYER,
     ENEMY,
     OBJECT
+}
+
+public enum DAMAGE_TYPE
+{
+    BUCKSHOT,
+    EXPLOSION,
+    FIRE,
+    PLASMA,
+    MELEE
 }
 
 public enum SPLASH_TYPE

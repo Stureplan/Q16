@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyBehaviour : MonoBehaviour, IDamageable
 {
+    public virtual void DamageI(int dmg, DAMAGE_TYPE type) { }
+
     public enum ENEMY_TYPE
     {
         GOLEM,
@@ -37,8 +39,8 @@ public class EnemyBehaviour : MonoBehaviour
         mr = GetComponentInChildren<SkinnedMeshRenderer>();
     }
     
-    public virtual void Damage(int amt) { }
-    public virtual void Headshot(int dmg) { }
+    public virtual void Damage(int amt, DAMAGE_TYPE type) { }
+    public virtual void Headshot(int dmg, DAMAGE_TYPE type) { }
     public virtual void Kill(int overkill) { }
     public virtual void Push(Vector3 dir, float force) { }
 

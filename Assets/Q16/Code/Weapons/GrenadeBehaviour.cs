@@ -47,7 +47,7 @@ public class GrenadeBehaviour : MonoBehaviour
         {
             //Direct Enemy hit
             EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(125);
+            enemy.Damage(125, DAMAGE_TYPE.EXPLOSION);
 
             Stats.info.amountHit++;
             Explode();
@@ -73,7 +73,7 @@ public class GrenadeBehaviour : MonoBehaviour
             {
                 //Hit enemy in vicinity
                 EnemyBehaviour enemy = explosionHits[i].GetComponent<EnemyBehaviour>();
-                enemy.Damage(75);
+                enemy.Damage(75, DAMAGE_TYPE.EXPLOSION);
 
 
                 // PUSH RAGDOLL

@@ -121,7 +121,7 @@ public class SunStaff : Weapon
             if (hit.collider.tag == "Enemy")
             {
                 EnemyBehaviour enemy = hit.transform.GetComponent<EnemyBehaviour>();
-                enemy.Damage(20);
+                enemy.Damage(20, DAMAGE_TYPE.FIRE);
                 enemy.SetDeathDirection(dir, 10.0f);
             }
 
@@ -138,7 +138,7 @@ public class SunStaff : Weapon
                 if (hit2.collider.tag == "Enemy")
                 {
                     EnemyBehaviour enemy = hit2.transform.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(20);
+                    enemy.Damage(20, DAMAGE_TYPE.FIRE);
                     enemy.SetDeathDirection((hit2.point - hit.point).normalized, 10.0f);
                 }
             }

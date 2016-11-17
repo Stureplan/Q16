@@ -12,6 +12,7 @@ public class EnemySpawnPopup : EditorWindow
     bool hasSelected = true;
 
     GameObject selected;
+    Vector2 scrollPos;
     static InteractableObject interactableObject;
 
 
@@ -87,7 +88,10 @@ public class EnemySpawnPopup : EditorWindow
 
     void ShowPrefabs()
     {
-        GUILayout.BeginHorizontal();
+        //scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(150.0f), GUILayout.Height(200.0f));
+
+        //GUILayout.BeginHorizontal();
+        
         for (int i = 0; i < prefabs.Length; i++)
         {
             GUILayout.BeginVertical();
@@ -103,7 +107,9 @@ public class EnemySpawnPopup : EditorWindow
 
             GUILayout.EndVertical();
         }
-        GUILayout.EndHorizontal();
+        //GUILayout.EndHorizontal();
+
+        //GUILayout.EndScrollView();
     }
 
     void OnInspectorUpdate()
@@ -116,13 +122,17 @@ public class EnemySpawnPopup : EditorWindow
         if (isDisplayed == false)
         {
             EnemySpawnPopup window = CreateInstance<EnemySpawnPopup>();
+            window.maxSize = new Vector2(200, 600);
+            window.minSize = window.maxSize;
+
             GUIContent content = new GUIContent("Enemy Spawner");
+            
             parent = p;
             interactableObject = io;
 
             window.titleContent = content;
             window.ShowUtility();
-
+            
             Load();
 
             isDisplayed = true;

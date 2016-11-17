@@ -284,7 +284,7 @@ public class GolemBehaviour : EnemyBehaviour
         anim.Play(name);
 	}
 
-    public override void Damage(int amt)
+    public override void Damage(int amt, DAMAGE_TYPE type)
     {
         health -= amt;
         //TODO: Find player OR "target" (sender, should be a parameter)

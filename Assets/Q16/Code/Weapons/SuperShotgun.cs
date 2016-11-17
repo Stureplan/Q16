@@ -96,7 +96,7 @@ public class SuperShotgun : Weapon
                     psImpact.Emit(2);
 
                     enemy = hit.collider.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(15);
+                    enemy.Damage(15, DAMAGE_TYPE.BUCKSHOT);
                     
                     // PUSH RAGDOLL
                     if (enemy.GetHealth() < 0)

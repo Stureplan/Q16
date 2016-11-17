@@ -3,6 +3,18 @@ using System.Collections;
 
 public class CultistBehaviour : EnemyBehaviour
 {
+    public override void DamageI(int dmg, DAMAGE_TYPE type)
+    {
+        health -= dmg;
+
+        if (CurrentState != STATE.ONFIRE && CurrentState != STATE.DYING)
+        {
+            SetCanMove(false);
+            SetWeaponHitbox(false);
+            anim.SetTrigger("stagger");
+        }
+    }
+
     enum STATE
     {
         IDLE,
@@ -313,7 +325,7 @@ public class CultistBehaviour : EnemyBehaviour
         SetCanMove(active);
     }
 
-    public override void Damage(int amt)
+    public override void Damage(int amt, DAMAGE_TYPE type)
     {
         health -= amt;
 
@@ -325,9 +337,9 @@ public class CultistBehaviour : EnemyBehaviour
         }
     }
 
-    public override void Headshot(int dmg)
+    public override void Headshot(int dmg, DAMAGE_TYPE type)
     {
-        Damage(dmg);
+        Damage(dmg, type);
 
         if (health < 1)
         {

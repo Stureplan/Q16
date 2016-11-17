@@ -47,26 +47,25 @@ public class RocketBehaviour : MonoBehaviour {
 
 		if (other.gameObject.tag == "Killbox")
 		{
-			Destroy (this.gameObject);
+            Explode();
 		}
 
 		if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
 		{
 			EmitParticles (pts[0]);
-			Instantiate (explosion, transform.position, Quaternion.identity);
-			
-			Destroy (this.gameObject);
+
+            Explode();
 		}
 		if (other.gameObject.tag == "Enemy")
 		{
-			//Direct enemy hit
-			Instantiate (explosion, transform.position, Quaternion.identity);
+            //Direct enemy hit
+            IDamageable dmg = other.gameObject.GetComponent<IDamageable>();
+            dmg.DamageI(125, DAMAGE_TYPE.EXPLOSION);
 
 			EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-			enemy.Damage (125);
+			enemy.Damage (125, DAMAGE_TYPE.EXPLOSION);
 
-            Stats.info.amountHit++;
-			Destroy (this.gameObject);
+            Explode();
 		}
 
         //TODO: Check if explosionHits is larger than 1 on direct impact (could be several impacts per collider..)
@@ -78,9 +77,7 @@ public class RocketBehaviour : MonoBehaviour {
 			{
 				//Hit enemy in vicinity
 				EnemyBehaviour enemy = explosionHits[i].GetComponent<EnemyBehaviour>();
-				enemy.Damage (75);
-              //  enemy.Push()
-
+				enemy.Damage (75, DAMAGE_TYPE.EXPLOSION);
 
                 // PUSH RAGDOLL
                 if (enemy.GetHealth() < 0)
@@ -105,6 +102,12 @@ public class RocketBehaviour : MonoBehaviour {
 
 	}
 
+    void Explode()
+    {
+        Instantiate(explosion, transform.position, Quaternion.identity);
+
+        Destroy(this.gameObject);
+    }
 
 	void EmitParticles(ContactPoint pt)
 	{

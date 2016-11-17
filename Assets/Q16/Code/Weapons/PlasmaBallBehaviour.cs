@@ -28,7 +28,7 @@ public class PlasmaBallBehaviour : MonoBehaviour
         if (other.tag == "Enemy")
         {
             EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(25);
+            enemy.Damage(25, DAMAGE_TYPE.PLASMA);
 
             Vector3 direction = transform.forward;
             enemy.Push(direction, 2.5f);

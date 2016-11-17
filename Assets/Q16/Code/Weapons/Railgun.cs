@@ -115,7 +115,7 @@ public class Railgun : Weapon
 			psWorld.Emit (75);
 
 			EnemyBehaviour enemy = hit.collider.gameObject.GetComponent<EnemyBehaviour>();
-			enemy.Damage (125);
+			enemy.Damage (125, DAMAGE_TYPE.PLASMA);
             enemy.SetDeathDirection(dir, 15.0f);
             
             Stats.info.amountHit++;
@@ -132,7 +132,7 @@ public class Railgun : Weapon
         {
             psWorld.Emit(75);
             EnemyBehaviour enemy = hit.collider.transform.GetComponentInParent<CultistBehaviour>();
-            enemy.Headshot(150);
+            enemy.Headshot(150, DAMAGE_TYPE.PLASMA);
 
             Stats.info.amountHit++;
         }

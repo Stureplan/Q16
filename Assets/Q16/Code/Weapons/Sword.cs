@@ -49,7 +49,7 @@ public class Sword : Weapon
         if (other.tag == "Enemy")
         {
             EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(50);
+            enemy.Damage(50, DAMAGE_TYPE.MELEE);
 
             // PUSH RAGDOLL
             if (enemy.GetHealth() < 1)

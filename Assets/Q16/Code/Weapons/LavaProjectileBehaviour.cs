@@ -34,7 +34,7 @@ public class LavaProjectileBehaviour : MonoBehaviour
         if (other.gameObject.tag == "Enemy")
         {
             EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(25);
+            enemy.Damage(25, DAMAGE_TYPE.FIRE);
 
             /*CultistFireFX fx = other.transform.GetComponentInParent<CultistFireFX>();
 

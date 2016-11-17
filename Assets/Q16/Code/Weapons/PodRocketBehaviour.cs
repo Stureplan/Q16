@@ -121,7 +121,7 @@ public class PodRocketBehaviour : MonoBehaviour
             if (explosionHits[i].tag == "Enemy")
             {
                 EnemyBehaviour enemy = explosionHits[i].GetComponent<EnemyBehaviour>();
-                enemy.Damage(50);
+                enemy.Damage(50, DAMAGE_TYPE.EXPLOSION);
 
                 // PUSH RAGDOLL
                 if (enemy.GetHealth() < 0)

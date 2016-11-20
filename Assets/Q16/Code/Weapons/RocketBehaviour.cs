@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class RocketBehaviour : MonoBehaviour {
-
+    
 	GameObject FX;
 	ParticleSystem debrisPS;
 	public GameObject explosion;
@@ -34,7 +34,7 @@ public class RocketBehaviour : MonoBehaviour {
 	{
         if (col.tag == "Killbox")
         {
-            Destroy(this.gameObject);
+            Explode();
         }
 	}
 
@@ -45,66 +45,47 @@ public class RocketBehaviour : MonoBehaviour {
 
 		ContactPoint[] pts = other.contacts;
 
-		if (other.gameObject.tag == "Killbox")
-		{
-            Explode();
-		}
+        //Direct enemy hit
+        IDamageable dmg;
+        if (other.gameObject.IsDamageable(out dmg))
+        {
+            dmg.Explosion(100, DAMAGE_TYPE.EXPLOSION, SenderInfo.Player(), transform.position, 20.0f);
+        }
+        else
+        {
+            EmitParticles(pts[0]);
 
-		if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
-		{
-			EmitParticles (pts[0]);
-
-            Explode();
-		}
-		if (other.gameObject.tag == "Enemy")
-		{
-            //Direct enemy hit
-            IDamageable dmg = other.gameObject.GetComponent<IDamageable>();
-            dmg.DamageI(125, DAMAGE_TYPE.EXPLOSION);
-
-			EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-			enemy.Damage (125, DAMAGE_TYPE.EXPLOSION);
-
-            Explode();
-		}
-
-        //TODO: Check if explosionHits is larger than 1 on direct impact (could be several impacts per collider..)
-        //TODO: Make sure world destroyable objects can be detected
-		Collider[] explosionHits = Physics.OverlapSphere (transform.position, 2.5f);
-		for (int i = 0; i < explosionHits.Length; i++)
-		{
-			if (explosionHits[i].tag == "Enemy")
-			{
-				//Hit enemy in vicinity
-				EnemyBehaviour enemy = explosionHits[i].GetComponent<EnemyBehaviour>();
-				enemy.Damage (75, DAMAGE_TYPE.EXPLOSION);
-
-                // PUSH RAGDOLL
-                if (enemy.GetHealth() < 0)
-                {
-                    Vector3 hitDir = explosionHits[i].transform.position - transform.position;
-                    hitDir = hitDir.normalized;
-
-                    enemy.SetDeathDirection(hitDir, 25.0f);
-                }
+        }
 
 
-                Stats.info.amountHit++;
-			}
-
-			if (explosionHits[i].tag == "Player")
-			{
-                PlayerInput m = explosionHits[i].gameObject.GetComponent<PlayerInput>();
-                //m.Jump(15.0f);
-                m.AddForce(explosionHits[i].transform.position - transform.position, 20.0f);
-			}
-		}
-
-	}
+        Explode();
+    }
 
     void Explode()
     {
         Instantiate(explosion, transform.position, Quaternion.identity);
+
+
+        //TODO: Check if explosionHits is larger than 1 on direct impact (could be several impacts per collider..)
+        //TODO: Make sure world destroyable objects can be detected
+        Collider[] explosionHits = Physics.OverlapSphere(transform.position, 2.5f);
+        for (int i = 0; i < explosionHits.Length; i++)
+        {
+            IDamageable entity;
+            if (explosionHits[i].gameObject.IsDamageable(out entity))
+            {
+                entity.Explosion(75, DAMAGE_TYPE.EXPLOSION, SenderInfo.Player(), transform.position, 20.0f);
+                if (entity.Health() <= 0)
+                {
+                    Vector3 hitDir = explosionHits[i].transform.position - transform.position;
+                    hitDir = hitDir.normalized;
+
+                    entity.DeathDirection(hitDir, 25.0f);
+                }
+            }
+        }
+
+
 
         Destroy(this.gameObject);
     }

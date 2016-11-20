@@ -52,7 +52,7 @@ public class RocketLauncher : Weapon
 		animations.Play("RocketFire");
         
         Quaternion rot = Quaternion.LookRotation(dir);
-		Instantiate (rocket, pos, rot);
+        Instantiate(rocket, pos, rot);
 
 		ps.Emit (20);
 

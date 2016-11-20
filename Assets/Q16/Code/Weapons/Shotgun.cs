@@ -19,8 +19,9 @@ public class Shotgun : Weapon
     // VARIABLES
     int amountOfPellets = 10;
     float spread = 0.05f;
+    LayerMask layerMask;
 
-	void Start ()
+    void Start ()
     {
         animations = GetComponent<Animation>();
         psGun = psObject.GetComponent<ParticleSystem>();
@@ -31,6 +32,8 @@ public class Shotgun : Weapon
         fireLight = GetComponentInChildren<Light>();
         fireLightAnim = fireLight.gameObject.GetComponent<Animation>();
 
+        layerMask = 1 << LayerMask.GetMask("Interactable");
+        
 
         // INHERITED VALUES
         CD = 0.5f;
@@ -80,18 +83,17 @@ public class Shotgun : Weapon
             if (Physics.Raycast(pos, dir, out hit))
             {
                 psWorld.transform.position = hit.point;
-                
-                if (hit.collider.tag == "Enemy")
+
+                IDamageable entity;
+                if (hit.collider.gameObject.IsDamageable(out entity))
                 {
                     psImpact.transform.position = hit.point;
                     psImpact.transform.rotation = Quaternion.LookRotation(dir);
-
                     psImpact.Emit(2);
 
-                    EnemyBehaviour enemy = hit.collider.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(5, DAMAGE_TYPE.BUCKSHOT);
-                    enemy.SetDeathDirection(dir, power);
 
+                    entity.Damage(5, DAMAGE_TYPE.BUCKSHOT, SenderInfo.Player());
+                    entity.DeathDirection(dir, power);
 
                     pelletsHit++;
                 }
@@ -101,8 +103,12 @@ public class Shotgun : Weapon
                     fx.StartFadingShader();
                     fx.SpawnImpactPS(hit.transform.position);
                 }
-
-                else if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
+                else if (hit.collider.tag == "EnemyHead")
+                {
+                    EnemyBehaviour eb = hit.collider.gameObject.GetComponentInParent<EnemyBehaviour>();
+                    eb.Damage(10, DAMAGE_TYPE.BUCKSHOT, SenderInfo.Player());
+                }
+                else
                 {
                     psWorld.Emit(2);
 

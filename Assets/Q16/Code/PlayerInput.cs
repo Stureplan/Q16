@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class PlayerInput : MonoBehaviour 
+public class PlayerInput : MonoBehaviour
 {
     // REFERENCES
     CharacterController cc;
@@ -12,7 +12,7 @@ public class PlayerInput : MonoBehaviour
 
     public GameObject weaponPos;
     Inventory inventory;
-    Health hp;
+    PlayerHealth hp;
 
     // MOUSE
 	float mHorizontalSpeed = 2.0f;
@@ -44,7 +44,7 @@ public class PlayerInput : MonoBehaviour
     void Start () 
 	{
 		cc = GetComponent<CharacterController>();
-        hp = GetComponent<Health>();
+        hp = GetComponent<PlayerHealth>();
         inventory = GetComponent<Inventory>();
         gunSway = weaponPos.GetComponent<GunSway>();
 
@@ -52,6 +52,7 @@ public class PlayerInput : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 
 
+        Settings.Setup();
 
         textMoveSpeed = GameObject.Find ("Movespeed").GetComponent<Text>();
         textChunks = GameObject.Find("ChunkModifier").GetComponent<Text>();
@@ -184,7 +185,13 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            cam.GetComponent<AudioSource>().mute = true;
+            Settings.Cmd("ToggleMusic", "");
+        }
+
+        //TODO: Move this out of debug mode and into real options
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Settings.Cmd("ToggleFullscreen", "");
         }
 
 
@@ -246,15 +253,6 @@ public class PlayerInput : MonoBehaviour
         if (col.tag == "Slowmo")
         {
             inventory.IncreaseDecreaseSlowmo(1);
-        }
-
-        if (col.tag == "CultistWeapon")
-        {
-            hp.Damage(20);
-
-            Vector3 dir = col.transform.GetComponentInParent<CultistBehaviour>().transform.forward;
-            dir.y = 0.5f;
-            AddForce(dir, 15.0f);
         }
     }
 

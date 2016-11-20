@@ -3,12 +3,6 @@ using System.Collections;
 
 public class MenuInput : MonoBehaviour
 {
-
-	void Start ()
-    {
-	
-	}
-	
 	void Update ()
     {
 	    if(Input.GetKeyDown(KeyCode.Escape))

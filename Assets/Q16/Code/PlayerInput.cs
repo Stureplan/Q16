@@ -222,6 +222,12 @@ public class PlayerInput : MonoBehaviour
         //If we get pushed somewhere and collide with a wall or anything,
         //disable the pushing force.
         forces.x = 0.0f; forces.z = 0.0f;
+        //forces.y = 0.0f;
+        
+        if (Vector3.Angle(hit.normal, Vector3.up) > 15.0f)
+        {
+            forces = Vector3.Reflect(-Vector3.up, hit.normal);
+        }
     }
 
 	void OnTriggerEnter (Collider col)

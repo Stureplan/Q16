@@ -127,7 +127,7 @@ public class SuperShotgun : Weapon
                 }
                 else if (hit.collider.tag == "EnemyHead")
                 {
-                    EnemyBehaviour eb = hit.collider.gameObject.GetComponent<EnemyBehaviour>();
+                    EnemyBehaviour eb = hit.collider.gameObject.GetComponentInParent<EnemyBehaviour>();
                     eb.Damage(20, DAMAGE_TYPE.BUCKSHOT, SenderInfo.Player());
                 }
                 else

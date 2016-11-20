@@ -113,11 +113,11 @@ public class SunStaff : Weapon
         RaycastHit hit;
         RaycastHit hit2;
 
-        if (Physics.Raycast(pos, dir, out hit))
+        if (Physics.Raycast(pos, dir, out hit, 100.0f))
         {
-            lr.SetPosition(0, spinningCircle.position);
-            lr.SetPosition(1, hit.point);
-
+            //lr.SetPosition(0, spinningCircle.position);
+            //lr.SetPosition(1, hit.point);
+            
             IDamageable entity;
             if (hit.collider.gameObject.IsDamageable(out entity))
             {
@@ -146,7 +146,7 @@ public class SunStaff : Weapon
 
             if (Physics.Raycast(hit.point, Vector3.Reflect(dir, hit.normal), out hit2))
             {
-                lr.SetPosition(2, hit2.point);
+               // lr.SetPosition(2, hit2.point);
 
                 if (hit2.collider.gameObject.IsDamageable(out entity))
                 {
@@ -185,6 +185,16 @@ public class SunStaff : Weapon
             {
                 lr.SetPosition(2, hit2.point);
             }
+            else
+            {
+                lr.SetPosition(2, hit2.point + (Vector3.Reflect(dir, hit.normal) * 100.0f));
+            }
+        }
+        else
+        {
+            lr.SetPosition(0, spinningCircle.position);
+            lr.SetPosition(1, pos + (dir * 100.0f));
+            lr.SetPosition(2, pos + (dir * 100.0f));
         }
     }
 

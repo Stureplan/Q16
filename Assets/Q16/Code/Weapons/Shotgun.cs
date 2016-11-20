@@ -6,6 +6,7 @@ public class Shotgun : Weapon
 {
     public GameObject psObject;
     public GameObject shellEject;
+    public ParticleSystem psTrail;
 
     Animation animations;
     ParticleSystem psWorld;
@@ -60,6 +61,7 @@ public class Shotgun : Weapon
         animations.Play("ShotgunFire");
 
         psGun.Emit(20);
+        psTrail.Emit(amountOfPellets);
 
         fireLightAnim.Stop();
         fireLightAnim.Play();

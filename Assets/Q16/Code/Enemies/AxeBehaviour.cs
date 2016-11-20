@@ -3,11 +3,15 @@ using System.Collections;
 
 public class AxeBehaviour : MonoBehaviour
 {
+    GolemBehaviour gb;
     Collider c;
     Cooldown cd;
+    SenderInfo sender;
 
 	void Start ()
     {
+        gb = GetComponentInParent<GolemBehaviour>();
+        sender = gb.Sender(SENDER_TYPE.ENEMY);
         c = GetComponent<Collider>();
         cd = new Cooldown(0.5f);
 	}
@@ -28,16 +32,17 @@ public class AxeBehaviour : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.tag == "Player")
+        IDamageable entity;
+        if (col.gameObject.IsDamageable(out entity))
         {
-            Health hp = col.GetComponent<Health>();
-            PlayerInput p = col.GetComponent<PlayerInput>();
+            entity.Damage(15, DAMAGE_TYPE.MELEE, sender);
 
-            hp.Damage(15);
-
-            Vector3 dir = transform.GetComponentInParent<GolemBehaviour>().transform.forward;
-            dir.y = 0.2f;
-            p.AddForce(dir, 10.0f);
+            if (entity.Type() == SENDER_TYPE.PLAYER)
+            {
+                Vector3 dir = gb.transform.forward;
+                dir.y = 0.2f;
+                col.GetComponentInParent<PlayerInput>().AddForce(dir, 10.0f);
+            }
         }
     }
 

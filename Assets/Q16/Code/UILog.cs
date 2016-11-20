@@ -51,8 +51,8 @@ public class UILog : MonoBehaviour
     public void Message(string msg)
     {
         messageText.text = msg + "\n";
+        StopCoroutine("IETextTimer");
         StartCoroutine(IETextTimer(messageText, messageDuration, false));
-
     }
 
 

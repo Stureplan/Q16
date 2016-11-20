@@ -13,6 +13,7 @@ public class Spawn : MonoBehaviour
 	void Start () 
 	{
 		player = (GameObject)Instantiate (guy, spawn.transform.position, Quaternion.identity);
+        Utility.SetPlayer(player.transform);
 
 		enemies = GameObject.FindGameObjectsWithTag ("Enemy");
 		for (int i = 0; i < enemies.Length; i++)

@@ -67,6 +67,14 @@ public class Inventory : MonoBehaviour
         hasWeapon[index] = hasWpn;
     }
 
+    public void SetHasAllWeapons(bool unlock)
+    {
+        for (int i = 0; i < hasWeapon.Length; i++)
+        {
+            hasWeapon[i] = unlock;
+        }
+    }
+
     bool HasWeapon(int index)
     {
         if (index > hasWeapon.Length-1)

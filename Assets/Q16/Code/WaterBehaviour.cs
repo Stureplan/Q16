@@ -24,6 +24,9 @@ public class WaterBehaviour : MonoBehaviour
 
     public void Splash(Vector3 pos, SPLASH_TYPE type)
     {
+        //TODO: Make static and make sure there aren't 1 WaterBehaviour per water source,
+        //instead we want one static function to spawn water fx
+
         GameObject splash;
         pos.y = top;
         

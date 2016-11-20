@@ -31,7 +31,7 @@ public class SpawnGibQuad : MonoBehaviour
     {
         if (hasSpawned == false)
         {
-            if (col.gameObject.tag == "World")
+            if (col.gameObject.tag == "Untagged")
             {
                 QUAD_TYPE type = (QUAD_TYPE)Random.Range(0, quadPrefabs.Length);
                 SpawnQuad(type, col);

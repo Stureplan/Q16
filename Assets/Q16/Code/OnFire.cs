@@ -20,7 +20,7 @@ public class OnFire : MonoBehaviour
 
         if (cd.ActionReady())
         {
-            enemy.Damage(5, DAMAGE_TYPE.FIRE);
+            enemy.Damage(5, DAMAGE_TYPE.FIRE, SenderInfo.Player());
             cd.ResetTimer();
         }
 	}

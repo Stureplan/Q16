@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CultistBehaviour : EnemyBehaviour
 {
-    public override void DamageI(int dmg, DAMAGE_TYPE type)
+    public override void Damage(int dmg, DAMAGE_TYPE type, SenderInfo sender)
     {
         health -= dmg;
 
@@ -13,6 +13,11 @@ public class CultistBehaviour : EnemyBehaviour
             SetWeaponHitbox(false);
             anim.SetTrigger("stagger");
         }
+    }
+
+    public override void Explosion(int dmg, DAMAGE_TYPE type, SenderInfo sender, Vector3 point, float force)
+    {
+        Damage(dmg, type, sender);
     }
 
     enum STATE
@@ -269,9 +274,8 @@ public class CultistBehaviour : EnemyBehaviour
         forwardPos += transform.forward;
 
         Quaternion rot = Quaternion.LookRotation(player.transform.position - forwardPos);
-        Instantiate(fireballPrefab, forwardPos, rot);
-
-
+        
+        Utility.InstantiateProjectile(fireballPrefab, forwardPos, rot, this.Sender(SENDER_TYPE.ENEMY));
     }
 
     void RotateTowards(Vector3 t)
@@ -325,21 +329,9 @@ public class CultistBehaviour : EnemyBehaviour
         SetCanMove(active);
     }
 
-    public override void Damage(int amt, DAMAGE_TYPE type)
+    public override void Headshot(int dmg, DAMAGE_TYPE type, SenderInfo sender)
     {
-        health -= amt;
-
-        if (CurrentState != STATE.ONFIRE && CurrentState != STATE.DYING)
-        {
-            SetCanMove(false);
-            SetWeaponHitbox(false);
-            anim.SetTrigger("stagger");
-        }
-    }
-
-    public override void Headshot(int dmg, DAMAGE_TYPE type)
-    {
-        Damage(dmg, type);
+        Damage(dmg, type, sender);
 
         if (health < 1)
         {

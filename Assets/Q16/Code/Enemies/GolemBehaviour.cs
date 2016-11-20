@@ -3,6 +3,17 @@ using System.Collections;
 
 public class GolemBehaviour : EnemyBehaviour 
 {
+    public override void Damage(int dmg, DAMAGE_TYPE type, SenderInfo sender)
+    {
+        health -= dmg;
+        GoToState(STATE.STAGGERING);
+    }
+
+    public override void Explosion(int dmg, DAMAGE_TYPE type, SenderInfo sender, Vector3 point, float force)
+    {
+        Damage(dmg, type, sender);
+    }
+
     public enum STATE
     {
         IDLE,
@@ -283,13 +294,6 @@ public class GolemBehaviour : EnemyBehaviour
         anim.Stop();
         anim.Play(name);
 	}
-
-    public override void Damage(int amt, DAMAGE_TYPE type)
-    {
-        health -= amt;
-        //TODO: Find player OR "target" (sender, should be a parameter)
-        GoToState(STATE.STAGGERING);
-    }
 
     public override void Push(Vector3 dir, float force)
     {

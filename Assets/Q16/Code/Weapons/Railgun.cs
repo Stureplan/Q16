@@ -38,7 +38,6 @@ public class Railgun : Weapon
         psWorld = GameObject.Find("RailgunHit").GetComponent<ParticleSystem>();
 
 
-
         // INHERITED VARIABLES
         CD = 1.0f;
 
@@ -110,16 +109,15 @@ public class Railgun : Weapon
 		}
 
 
-		if (hit.collider.tag == "Enemy")
-		{
-			psWorld.Emit (75);
+        IDamageable entity;
+        if (hit.collider.gameObject.IsDamageable(out entity))
+        {
+            psWorld.Emit(75);
 
-			EnemyBehaviour enemy = hit.collider.gameObject.GetComponent<EnemyBehaviour>();
-			enemy.Damage (125, DAMAGE_TYPE.PLASMA);
-            enemy.SetDeathDirection(dir, 15.0f);
-            
-            Stats.info.amountHit++;
-		}
+            entity.Damage(125, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
+
+            if (entity.Health() <= 0) { entity.DeathDirection(dir, 15.0f); }
+        }
 
         else if (hit.collider.tag == "CultistWeapon")
         {
@@ -132,9 +130,7 @@ public class Railgun : Weapon
         {
             psWorld.Emit(75);
             EnemyBehaviour enemy = hit.collider.transform.GetComponentInParent<CultistBehaviour>();
-            enemy.Headshot(150, DAMAGE_TYPE.PLASMA);
-
-            Stats.info.amountHit++;
+            enemy.Headshot(150, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
         }
 
 		alpha = 1.0f;

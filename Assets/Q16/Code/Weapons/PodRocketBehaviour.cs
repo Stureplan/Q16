@@ -118,31 +118,21 @@ public class PodRocketBehaviour : MonoBehaviour
         Collider[] explosionHits = Physics.OverlapSphere(transform.position, 2.0f);
         for (int i = 0; i < explosionHits.Length; i++)
         {
-            if (explosionHits[i].tag == "Enemy")
+            IDamageable entity;
+            if (other.gameObject.IsDamageable(out entity))
             {
-                EnemyBehaviour enemy = explosionHits[i].GetComponent<EnemyBehaviour>();
-                enemy.Damage(50, DAMAGE_TYPE.EXPLOSION);
+                entity.Explosion(50, DAMAGE_TYPE.EXPLOSION, SenderInfo.Player(), transform.position, 20.0f);
 
-                // PUSH RAGDOLL
-                if (enemy.GetHealth() < 0)
+                if (entity.Health() <= 0)
                 {
-                    Vector3 hitDir = explosionHits[i].transform.position - transform.position;
-                    hitDir = hitDir.normalized;
+                    Vector3 hitDir = (explosionHits[i].transform.position - transform.position).normalized;
 
-                    enemy.SetDeathDirection(hitDir, 15.0f);
+                    entity.DeathDirection(hitDir, 15.0f);
                 }
-
-                Stats.info.amountHit++;
-            }
-
-            if (explosionHits[i].tag == "Player")
-            {
-                PlayerInput m = explosionHits[i].gameObject.GetComponent<PlayerInput>();
-                m.AddForce(explosionHits[i].transform.position - transform.position, 20.0f);
             }
         }
 
-        Explode();  
+        Explode();
     }
 
 

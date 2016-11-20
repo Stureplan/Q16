@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FireBallBehaviour : MonoBehaviour
+public class FireBallBehaviour : ProjectileBehaviour
 {
     public GameObject psPrefab;
 
@@ -21,25 +21,32 @@ public class FireBallBehaviour : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        IDamageable entity;
+        if (other.gameObject.IsDamageable(out entity))
+        {
+            entity.Damage(25, DAMAGE_TYPE.FIRE, sender);
+
+            if (entity.Type() == SENDER_TYPE.PLAYER)
+            {
+                Vector3 force = transform.forward;
+                force.y = 0.5f;
+                other.gameObject.GetComponent<PlayerInput>().AddForce(force, 15.0f);
+            }
+
+            Explode();
+            return;
+        }
+
+
         if (other.tag == "Killbox")
         {
             Explode();
             return;
         }
 
-        if (other.tag == "Player")
-        {
-            Health h = other.gameObject.GetComponent<Health>();
-            PlayerInput p = other.gameObject.GetComponent<PlayerInput>();
-            h.Damage(25);
 
-            Vector3 force = transform.forward;
-            force.y = 0.5f;
-            p.AddForce(force, 15.0f);
 
-            Explode();
-            return;
-        }
+
 
         if (other.tag != "EnemyShot")
         {

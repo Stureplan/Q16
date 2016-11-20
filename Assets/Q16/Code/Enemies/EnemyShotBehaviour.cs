@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyShotBehaviour : MonoBehaviour 
+public class EnemyShotBehaviour : ProjectileBehaviour 
 {
 	Rigidbody rb;
 	ParticleSystem impactFX;
@@ -34,18 +34,17 @@ public class EnemyShotBehaviour : MonoBehaviour
             return;
         }
 
-        if (other.tag == "Player")
+        IDamageable entity;
+        if (other.gameObject.IsDamageable(out entity))
         {
-            //TODO: UI effect?
+            entity.Damage(15, DAMAGE_TYPE.PROJECTILE, this.Sender(SENDER_TYPE.ENEMY));
+            if (entity.Type() == SENDER_TYPE.PLAYER)
+            {
+                Vector3 force = transform.forward;
+                force.y = 0.5f;
 
-            Health h = other.gameObject.GetComponent<Health>();
-            PlayerInput p = other.gameObject.GetComponent<PlayerInput>();
-
-            h.Damage(15);
-
-            Vector3 force = transform.forward;
-            force.y = 0.5f;
-            p.AddForce(force, 7.5f);
+                other.GetComponent<PlayerInput>().AddForce(force, 7.5f);
+            }
 
             SelfDestruct();
         }
@@ -53,7 +52,6 @@ public class EnemyShotBehaviour : MonoBehaviour
         if (other.tag != "EnemyShot")
         {
             SelfDestruct();
-
         }
     }
 

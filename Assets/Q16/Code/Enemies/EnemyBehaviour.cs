@@ -3,14 +3,12 @@ using System.Collections;
 
 public class EnemyBehaviour : MonoBehaviour, IDamageable
 {
-    public virtual void DamageI(int dmg, DAMAGE_TYPE type) { }
-
-    public enum ENEMY_TYPE
-    {
-        GOLEM,
-        CULTIST,
-        TENTACLE_WARRIOR
-    }
+    //   <IDamageable>   //
+    public SENDER_TYPE Type() { return SENDER_TYPE.ENEMY; }
+    public virtual void Damage(int dmg, DAMAGE_TYPE type, SenderInfo sender) { }
+    public virtual void Explosion(int dmg, DAMAGE_TYPE type, SenderInfo sender, Vector3 point, float force) { }
+    public int Health() { return health; }
+    public void DeathDirection(Vector3 dir, float power) { deathDirection = dir; deathPower = power; }
 
 
     public Transform player;
@@ -39,10 +37,11 @@ public class EnemyBehaviour : MonoBehaviour, IDamageable
         mr = GetComponentInChildren<SkinnedMeshRenderer>();
     }
     
-    public virtual void Damage(int amt, DAMAGE_TYPE type) { }
-    public virtual void Headshot(int dmg, DAMAGE_TYPE type) { }
+    //public virtual void Damage(int amt, DAMAGE_TYPE type) { }
+    public virtual void Headshot(int dmg, DAMAGE_TYPE type, SenderInfo sender) { }
     public virtual void Kill(int overkill) { }
     public virtual void Push(Vector3 dir, float force) { }
+    public virtual void SetTarget(Transform t) { }
 
     public void EmitParticles()
     {

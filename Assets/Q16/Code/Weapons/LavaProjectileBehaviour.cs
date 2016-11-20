@@ -31,34 +31,20 @@ public class LavaProjectileBehaviour : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Enemy")
+        IDamageable entity;
+        if (other.gameObject.IsDamageable(out entity))
         {
-            EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(25, DAMAGE_TYPE.FIRE);
+            entity.Damage(25, DAMAGE_TYPE.FIRE, SenderInfo.Player());
 
-            /*CultistFireFX fx = other.transform.GetComponentInParent<CultistFireFX>();
-
-            if (fx != null)
+            if (entity.Health() <= 0)
             {
-                fx.StartFadingShader();
-                fx.SpawnImpactPS(other.transform.position);
-            }*/
+                Vector3 hitDir = (other.contacts[0].normal - transform.position).normalized;
 
-
-            if (enemy.GetHealth() < 0)
-            {
-                Vector3 hitDir = other.contacts[0].normal - transform.position;
-                hitDir.Normalize();
-
-                enemy.SetDeathDirection(hitDir, 10.0f);
-                
+                entity.DeathDirection(hitDir, 10.0f);
             }
         }
-
-        if (other.gameObject.tag == "World" || other.gameObject.tag == "WorldProp")
-        {
-            Instantiate(fireHitPrefab, transform.position, Quaternion.LookRotation(other.contacts[0].normal), transform);
-        }
+        
+        Instantiate(fireHitPrefab, transform.position, Quaternion.LookRotation(other.contacts[0].normal), transform);
     }
 
     void DestroyAndRemove()

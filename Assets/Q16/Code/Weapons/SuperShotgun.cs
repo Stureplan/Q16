@@ -19,8 +19,9 @@ public class SuperShotgun : Weapon
 
     int amountOfPellets = 30;
     float spread = 0.1f;
+    LayerMask layerMask;
 
-	void Start ()
+    void Start ()
     {
         animations = GetComponent<Animation>();
         psGun = psObject.GetComponent<ParticleSystem>();
@@ -32,6 +33,7 @@ public class SuperShotgun : Weapon
         fireLight = GetComponentInChildren<Light>();
         fireLightAnim = fireLight.gameObject.GetComponent<Animation>();
 
+        layerMask = 1 << LayerMask.GetMask("Interactable");
 
         // INHERITED VALUES
         CD = 1.5f;
@@ -58,8 +60,6 @@ public class SuperShotgun : Weapon
 
     public override void Fire(Vector3 pos, Vector3 dir)
     {
-        EnemyBehaviour enemy = null;
-
         animations.Stop();
         animations.Play("SuperShotgunFire");
 
@@ -88,51 +88,52 @@ public class SuperShotgun : Weapon
             {
                 psWorld.transform.position = hit.point;
 
-                if (hit.collider.tag == "Enemy")
+
+
+
+
+                IDamageable entity;
+                if (hit.collider.gameObject.IsDamageable(out entity))
                 {
-                    psImpact.transform.position = hit.point;
-                    psImpact.transform.rotation = Quaternion.LookRotation(dir);
-
-                    psImpact.Emit(2);
-
-                    enemy = hit.collider.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(15, DAMAGE_TYPE.BUCKSHOT);
-                    
-                    // PUSH RAGDOLL
-                    if (enemy.GetHealth() < 0)
+                    if (entity.Type() == SENDER_TYPE.ENEMY)
                     {
-                        enemy.SetDeathDirection(dir, power);
-                        //TODO: Enemy killed, increase Emission texture here!
+                        psImpact.transform.position = hit.point;
+                        psImpact.transform.rotation = Quaternion.LookRotation(dir);
+                        psImpact.Emit(2);
+                    }
+                    else
+                    {
+                        psWorld.Emit(5);
+                    }
+
+
+                    entity.Damage(15, DAMAGE_TYPE.BUCKSHOT, SenderInfo.Player());
+                    if (entity.Health() <= 0)
+                    {
+                        entity.DeathDirection(dir, power);
                     }
 
                     pelletsHit++;
                 }
-
                 else if (hit.collider.tag == "CultistWeapon")
                 {
                     CultistFireFX fx = hit.collider.transform.GetComponentInParent<CultistFireFX>();
                     fx.StartFadingShader();
                     fx.SpawnImpactPS(hit.transform.position);
                 }
-
-                else if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
-                {
-
-                    psWorld.Emit(5);
-                }
-
                 else if (hit.collider.tag == "Water")
                 {
                     hit.collider.GetComponent<WaterBehaviour>().Splash(hit.point, SPLASH_TYPE.SMALL);
                 }
-
-
-            }
-
-            if (pelletsHit > 0)
-            {
-                //We hit something
-                //stats.info.hit++;
+                else if (hit.collider.tag == "EnemyHead")
+                {
+                    EnemyBehaviour eb = hit.collider.gameObject.GetComponent<EnemyBehaviour>();
+                    eb.Damage(20, DAMAGE_TYPE.BUCKSHOT, SenderInfo.Player());
+                }
+                else
+                {
+                    psWorld.Emit(5);
+                }
             }
         }
 

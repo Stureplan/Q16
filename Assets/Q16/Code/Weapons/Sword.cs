@@ -46,34 +46,33 @@ public class Sword : Weapon
 
     public void DamageTarget(Collider other)
     {
-        if (other.tag == "Enemy")
+        IDamageable entity;
+        if (other.gameObject.IsDamageable(out entity))
         {
-            EnemyBehaviour enemy = other.gameObject.GetComponent<EnemyBehaviour>();
-            enemy.Damage(50, DAMAGE_TYPE.MELEE);
+            entity.Damage(50, DAMAGE_TYPE.MELEE, SenderInfo.Player());
 
-            // PUSH RAGDOLL
-            if (enemy.GetHealth() < 1)
+            if (entity.Health() <= 0)
             {
                 if (animations.IsPlaying("SwordFire1"))
                 {
-                    enemy.SetDeathDirection(-transform.right, 7.5f);
+                    entity.DeathDirection(-transform.right, 7.5f);
                 }
                 if (animations.IsPlaying("SwordFire2"))
                 {
-                    enemy.SetDeathDirection(transform.right, 7.5f);
+                    entity.DeathDirection(transform.right, 7.5f);
                 }
-            }
 
-            if (bloodAmount < 3)
-            {
-                mr.material.SetTexture("_MainTex", bloodTexs[bloodAmount]);
-                bloodAmount++;
+                if (bloodAmount < 3)
+                {
+                    mr.material.SetTexture("_MainTex", bloodTexs[bloodAmount]);
+                    bloodAmount++;
 
-                //+= 10;
-            }
-            else
-            {
-                ps.enableEmission = true;
+                    //+= 10;
+                }
+                else
+                {
+                    ps.enableEmission = true;
+                }
             }
         }
     }

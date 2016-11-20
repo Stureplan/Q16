@@ -118,14 +118,28 @@ public class SunStaff : Weapon
             lr.SetPosition(0, spinningCircle.position);
             lr.SetPosition(1, hit.point);
 
-            if (hit.collider.tag == "Enemy")
+            IDamageable entity;
+            if (hit.collider.gameObject.IsDamageable(out entity))
             {
-                EnemyBehaviour enemy = hit.transform.GetComponent<EnemyBehaviour>();
-                enemy.Damage(20, DAMAGE_TYPE.FIRE);
-                enemy.SetDeathDirection(dir, 10.0f);
+                entity.Damage(20, DAMAGE_TYPE.FIRE, SenderInfo.Player());
+
+                if (entity.Health() <= 0)
+                {
+                    entity.DeathDirection(dir, 10.0f);
+                }
+            }
+            else if (hit.collider.tag == "EnemyHead")
+            {
+                entity = hit.collider.GetComponentInParent<IDamageable>();
+                entity.Damage(20, DAMAGE_TYPE.FIRE, SenderInfo.Player());
+
+                if (entity.Health() <= 0)
+                {
+                    entity.DeathDirection(dir, 10.0f);
+                }
             }
 
-            if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
+            //if (hit.collider.tag == "World" || hit.collider.tag == "WorldProp")
             {
                 //TODO: Spawn particles
             }
@@ -134,12 +148,23 @@ public class SunStaff : Weapon
             {
                 lr.SetPosition(2, hit2.point);
 
-
-                if (hit2.collider.tag == "Enemy")
+                if (hit2.collider.gameObject.IsDamageable(out entity))
                 {
-                    EnemyBehaviour enemy = hit2.transform.GetComponent<EnemyBehaviour>();
-                    enemy.Damage(20, DAMAGE_TYPE.FIRE);
-                    enemy.SetDeathDirection((hit2.point - hit.point).normalized, 10.0f);
+                    entity.Damage(10, DAMAGE_TYPE.FIRE, SenderInfo.Player());
+                    if (entity.Health() <= 0)
+                    {
+                        entity.DeathDirection((hit2.point - hit.point).normalized, 10.0f);
+                    }
+                }
+                else if (hit2.collider.tag == "EnemyHead")
+                {
+                    entity = hit2.collider.GetComponentInParent<IDamageable>();
+                    entity.Damage(10, DAMAGE_TYPE.FIRE, SenderInfo.Player());
+
+                    if (entity.Health() <= 0)
+                    {
+                        entity.DeathDirection((hit2.point - hit.point).normalized, 10.0f);
+                    }
                 }
             }
         }

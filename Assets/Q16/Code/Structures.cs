@@ -59,6 +59,35 @@ public enum SPLASH_TYPE
     LARGE
 }
 
+public struct Item
+{
+    public string name;
+
+    public static Item Create(string n)
+    {
+        Item item;
+        item.name = n;
+
+        return item;
+    }
+
+    public static Item SkeletonKey()
+    {
+        Item item;
+        item.name = "SkeletonKey";
+
+        return item;
+    }
+
+    public static Item FleshKey()
+    {
+        Item item;
+        item.name = "FleshKey";
+
+        return item;
+    }
+}
+
 public struct SenderInfo
 {
     public Transform s_Transform;

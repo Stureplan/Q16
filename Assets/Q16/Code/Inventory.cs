@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class Inventory : MonoBehaviour
 {
     public GameObject[] weaponObjects;
     Weapon currentWeapon;
+
+    private Dictionary<Item, bool> itemObjects;
 
     int amount;
     bool[] hasWeapon;
@@ -12,7 +16,7 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
-
+        SetupItems();
         hasWeapon = new bool[weaponObjects.Length];
 
         for (int i = 0; i < weaponObjects.Length; i++)
@@ -26,6 +30,14 @@ public class Inventory : MonoBehaviour
         weaponObjects[0].SetActive(true);
 
         currentWeapon = weaponObjects[0].GetComponent<Weapon>();
+    }
+
+    void SetupItems()
+    {
+        itemObjects = new Dictionary<Item, bool>();
+
+        itemObjects.Add(Item.SkeletonKey(), false);
+        itemObjects.Add(Item.FleshKey(), false);
     }
 
     public void FireWeapon(Vector3 pos, Vector3 dir)
@@ -60,6 +72,16 @@ public class Inventory : MonoBehaviour
     public bool CheckWeaponCD()
     {
         return currentWeapon.CheckCD();
+    }
+
+    public void SetItem(Item item, bool hasItem)
+    {
+        itemObjects[item] = hasItem;
+    }
+
+    public bool HasItem(Item item)
+    {
+        return itemObjects.ContainsKey(item);
     }
 
     public void SetHasWeapon(int index, bool hasWpn)

@@ -231,15 +231,20 @@ public static class Settings
                     msg = "Unlocked all weapons!";
                     break;
 
+                case 666:
+                    inv = GameObject.FindObjectOfType<Inventory>();
+                    inv.SetItem(Item.SkeletonKey(), true);
+                    msg = "Unlocked item: " + Item.SkeletonKey().name;
+                    break;
+
                 default:
                     msg = "Impulse " + n + " doesn't exist.";
                     break;
             }
-
         }
         else
         {
-            msg = n + " isn't a proper number.";
+            msg = n + " isn't a proper number. (Use whole numbers only)";
         }
 
         return msg;

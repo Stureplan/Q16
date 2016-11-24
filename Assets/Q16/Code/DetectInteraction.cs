@@ -11,9 +11,7 @@ public class DetectInteraction : MonoBehaviour
 	    switch (tag)
         {
             case "Player":
-                sender.s_Type = SENDER_TYPE.PLAYER;
-                sender.s_Tag = tag;
-                sender.s_Transform = transform;
+                sender = SenderInfo.Player();
                 cameraTransform = transform.GetComponentInChildren<Camera>().transform;
                 break;
 

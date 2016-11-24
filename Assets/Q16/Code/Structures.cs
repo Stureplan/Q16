@@ -105,6 +105,17 @@ public struct SenderInfo
         return p;
     }
 
+    public static SenderInfo Object()
+    {
+        SenderInfo p;
+
+        p.s_Tag = "World";
+        p.s_Transform = null;
+        p.s_Type = SENDER_TYPE.OBJECT;
+
+        return p;
+    }
+
     public static SenderInfo Create(string tag, Transform t, SENDER_TYPE type)
     {
         SenderInfo sender;

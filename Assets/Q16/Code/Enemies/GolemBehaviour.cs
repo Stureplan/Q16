@@ -12,6 +12,7 @@ public class GolemBehaviour : EnemyBehaviour
     public override void Explosion(int dmg, DAMAGE_TYPE type, SenderInfo sender, Vector3 point, float force)
     {
         Damage(dmg, type, sender);
+        GoToState(STATE.STAGGERING);
     }
 
     public enum STATE
@@ -27,6 +28,7 @@ public class GolemBehaviour : EnemyBehaviour
     int number = 0;
     int cTimesShot = 0;
 
+    //References
     public GameObject explosion;
 	public GameObject shot;
 	Transform hand;
@@ -37,7 +39,7 @@ public class GolemBehaviour : EnemyBehaviour
     NavMeshAgent agent;
     CharacterController cc;
     Vector3 forces;
-
+    
 	void Start () 
 	{
         SetupReferences();

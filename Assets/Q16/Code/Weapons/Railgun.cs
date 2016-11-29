@@ -106,32 +106,39 @@ public class Railgun : Weapon
 
 			psWorld.transform.position = hit.point;
 			psWorld.transform.rotation = Quaternion.LookRotation(dir);
-		}
 
+            IDamageable entity;
+            if (hit.collider.gameObject.IsDamageable(out entity))
+            {
+                psWorld.Emit(75);
 
-        IDamageable entity;
-        if (hit.collider.gameObject.IsDamageable(out entity))
-        {
-            psWorld.Emit(75);
+                entity.Damage(125, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
 
-            entity.Damage(125, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
-
-            if (entity.Health() <= 0) { entity.DeathDirection(dir, 15.0f); }
+                if (entity.Health() <= 0) { entity.DeathDirection(dir, 15.0f); }
+            }
+            else if (hit.collider.tag == "CultistWeapon")
+            {
+                CultistFireFX fx = hit.collider.transform.GetComponentInParent<CultistFireFX>();
+                fx.StartFadingShader();
+                fx.SpawnImpactPS(hit.transform.position);
+            }
+            else if (hit.collider.tag == "EnemyHead")
+            {
+                psWorld.Emit(75);
+                EnemyBehaviour enemy = hit.collider.transform.GetComponentInParent<CultistBehaviour>();
+                enemy.Headshot(150, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
+            }
+            else
+            {
+                lr.SetPosition(0, pos);
+                lr.SetPosition(1, pos + (dir * 100.0f));
+            }
         }
 
-        else if (hit.collider.tag == "CultistWeapon")
-        {
-            CultistFireFX fx = hit.collider.transform.GetComponentInParent<CultistFireFX>();
-            fx.StartFadingShader();
-            fx.SpawnImpactPS(hit.transform.position);
-        }
 
-        else if (hit.collider.tag == "EnemyHead")
-        {
-            psWorld.Emit(75);
-            EnemyBehaviour enemy = hit.collider.transform.GetComponentInParent<CultistBehaviour>();
-            enemy.Headshot(150, DAMAGE_TYPE.PLASMA, SenderInfo.Player());
-        }
+
+
+
 
 		alpha = 1.0f;
         SetZoom(false);

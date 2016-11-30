@@ -38,11 +38,14 @@ public class InteractableObject : MonoBehaviour
     public ACTION_TYPE aType;
 
     //FOR MOVE
+    /*
     public Transform aTransformToMove;
     public Vector3 aPositionMove;
     public bool aSnapMove = false;
     public float aTimeToMove;
-
+    */
+    public Move[] aMove;
+    
 
     //FOR ROTATE
     public Transform aTransformToRotate;
@@ -158,12 +161,16 @@ public class InteractableObject : MonoBehaviour
 
     void Move()
     {
-        if (aSnapMove)
+        for (int i = 0; i < aMove.Length; i++)
         {
-            aPositionMove = Utility.RoundVector3(aPositionMove);
-        }
+            if (aMove[i].snapMove)
+            {
+                aMove[i].toPosition = Utility.RoundVector3(aMove[i].toPosition);
+            }
 
-        StartCoroutine(IEMove(aTransformToMove.position + aPositionMove, aTimeToMove));
+            StartCoroutine(IEMove(i, aMove[i].transformToMove.position + aMove[i].toPosition, aMove[i].duration));
+
+        }
     }
 
     void Rotate()
@@ -183,7 +190,7 @@ public class InteractableObject : MonoBehaviour
 
     }
 
-    IEnumerator IEMove(Vector3 to, float time)
+    IEnumerator IEMove(int i, Vector3 to, float time)
     {
 
         //here goes repeatable code?
@@ -194,13 +201,13 @@ public class InteractableObject : MonoBehaviour
         }*/
 
         float t = 0.0f;
-        float d = Vector3.Distance(aTransformToMove.position, to);
+        float d = Vector3.Distance(aMove[i].transformToMove.position, to);
 
         while (t < time)
         {
             float delta = (d * Time.deltaTime) / time;
 
-            aTransformToMove.position = Vector3.MoveTowards(aTransformToMove.position, to, delta);
+            aMove[i].transformToMove.position = Vector3.MoveTowards(aMove[i].transformToMove.position, to, delta);
             t += Time.deltaTime;
 
             yield return null;
@@ -244,8 +251,16 @@ public class InteractableObjectEditor : Editor
         //Setup
         iObject = target as InteractableObject;
         editorMat = (Material)AssetDatabase.LoadAssetAtPath("Assets/Resources/Editor/TransparentEditorMesh.mat", typeof(Material));
-
-        
+        if (iObject.tag != "Interactable")
+        {
+            if (EditorUtility.DisplayDialog(
+                "Change Tag to Interactable?",
+                "Do you want to change your tag from " + iObject.tag + " to " + "Interactable?",
+                "Yes, change it", "No, keep my tag"))
+            {
+                iObject.tag = "Interactable";
+            }
+        }
     }
 
     void OnSceneGUI()
@@ -340,10 +355,14 @@ public class InteractableObjectEditor : Editor
         switch (aTypeGUI)
         {
             case ACTION_TYPE.MOVE:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aMove"), new GUIContent("Move Objects"), true);
+                
+                /*
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aTransformToMove"), new GUIContent("Move Object"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aPositionMove"), new GUIContent("Move to Position"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aSnapMove"), new GUIContent("Snap Movement"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aTimeToMove"), new GUIContent("Seconds to Move"));
+                */
                 break;
 
             case ACTION_TYPE.ROTATE:
@@ -434,39 +453,43 @@ public class InteractableObjectEditor : Editor
 
     void MoveGizmos()
     {
-        if (iObject.aTransformToMove != null)
+        for (int i = 0; i < iObject.aMove.Length; i++)
         {
-            Vector3 fPos, tPos;
-            Vector3 a = iObject.aTransformToMove.position;
-
-
-            fPos = iObject.aTransformToMove.position;
-            tPos = iObject.aPositionMove + fPos;
-            if (iObject.aSnapMove)
+            if (iObject.aMove[i].transformToMove != null)
             {
-                tPos = Utility.RoundVector3(tPos);
-            }
+                Vector3 fPos, tPos;
+                Vector3 a = iObject.aMove[i].transformToMove.position;
+
+
+                fPos = iObject.aMove[i].transformToMove.position;
+                tPos = iObject.aMove[i].toPosition + fPos;
+                if (iObject.aMove[i].snapMove)
+                {
+                    tPos = Utility.RoundVector3(tPos);
+                }
 
 
 
-            Vector3 dir = (tPos - fPos).normalized;
-            Quaternion rot = Quaternion.identity;
-            if (dir != Vector3.zero) rot = Quaternion.LookRotation(dir);
+                Vector3 dir = (tPos - fPos).normalized;
+                Quaternion rot = Quaternion.identity;
+                if (dir != Vector3.zero) rot = Quaternion.LookRotation(dir);
 
 
 
-            Handles.color = Color.white;
-            Handles.DrawLine(fPos, tPos);
-            Handles.CircleCap(0, tPos, rot, 0.25f);
+                Handles.color = Color.white;
+                Handles.DrawLine(fPos, tPos);
+                Handles.CircleCap(0, tPos, rot, 0.25f);
 
-            
-            iObjectMesh = iObject.aTransformToMove.GetComponent<MeshFilter>();
-            
-            if (iObjectMesh != null)
-            {
-                Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.aTransformToMove.rotation, editorMat, 0);
+
+                iObjectMesh = iObject.aMove[i].transformToMove.GetComponent<MeshFilter>();
+
+                if (iObjectMesh != null)
+                {
+                    Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.aMove[i].transformToMove.rotation, editorMat, 0);
+                }
             }
         }
+        
     }
 
     void RotateGizmos()

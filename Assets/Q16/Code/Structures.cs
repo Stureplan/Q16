@@ -158,6 +158,15 @@ public struct SenderInfo
     }
 }
 
+[System.Serializable]
+public struct Move
+{
+    public Transform transformToMove;
+    public Vector3 toPosition;
+    public bool snapMove;
+    public float duration;
+}
+
 
 [System.Serializable]
 public struct EnemySpawn

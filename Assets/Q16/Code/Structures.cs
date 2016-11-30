@@ -25,6 +25,14 @@ public enum INTERACTION_TYPE
     PUSH
 }
 
+public enum CONDITION_TYPE
+{
+    NONE,
+    ITEM,
+    ACTIVATED,
+    CUSTOM
+}
+
 public enum ACTION_TYPE
 {
     MOVE,
@@ -63,7 +71,7 @@ public struct Item
 {
     public string name;
 
-    public static Item Create(string n)
+    public static Item Get(string n)
     {
         Item item;
         item.name = n;
@@ -71,10 +79,10 @@ public struct Item
         return item;
     }
 
-    public static Item SkeletonKey()
+/*    public static Item SkeletonKey()
     {
         Item item;
-        item.name = "SkeletonKey";
+        item.name = "Skeleton Key";
 
         return item;
     }
@@ -82,9 +90,31 @@ public struct Item
     public static Item FleshKey()
     {
         Item item;
-        item.name = "FleshKey";
+        item.name = "Flesh Key";
 
         return item;
+    }
+   
+    public static Item QuadDamage()
+    {
+        Item item;
+        item.name = "Quad Damage";
+
+        return item;
+    }
+*/
+
+    public static string[] ItemNames()
+    {
+        string[] names = 
+        {
+            "Skeleton Key",
+            "Flesh Key",
+            "Silver Key",
+            "Quad Damage"
+        };
+
+        return names;
     }
 }
 

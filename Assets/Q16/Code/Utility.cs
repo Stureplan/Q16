@@ -43,6 +43,19 @@ public static class Utility
         return vec;
     }
 
+    public static bool HasItem(string name)
+    {
+        bool hasItem = false;
+
+        Inventory inv = Player().GetComponent<Inventory>();
+        if (inv.HasItem(Item.Get(name)))
+        {
+            hasItem = true;
+        }
+
+        return hasItem;
+    }
+
     public static bool IsDamageable(this GameObject obj, out IDamageable entity)
     {
         bool hasComponent = false;

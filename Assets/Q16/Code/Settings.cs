@@ -225,16 +225,15 @@ public static class Settings
             switch (n)
             {
                 case 101:
-                    Object.FindObjectOfType<Inventory>();
-                    Inventory inv = GameObject.FindObjectOfType<Inventory>();
+                    Inventory inv = Utility.Player().GetComponent<Inventory>();
                     inv.SetHasAllWeapons(true);
                     msg = "Unlocked all weapons!";
                     break;
 
                 case 666:
-                    inv = GameObject.FindObjectOfType<Inventory>();
-                    inv.SetItem(Item.SkeletonKey(), true);
-                    msg = "Unlocked item: " + Item.SkeletonKey().name;
+                    inv = Utility.Player().GetComponent<Inventory>();
+                    inv.SetItem(Item.Get("Skeleton Key"), true);
+                    msg = "Unlocked item: " + Item.Get("Skeleton Key").name;
                     break;
 
                 default:

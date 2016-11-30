@@ -21,6 +21,17 @@ public class InteractableObject : MonoBehaviour
     /* ------------------------------------------------------ */
 
 
+    /* ---------------------- CONDITION --------------------- */
+    public CONDITION_TYPE cType;
+
+    //FOR ITEM CONDITION
+    public string cItemConditionString;
+    public int cItemID;
+    public ConditionObject cCustom;
+
+    //FOR ACTIVATED OBJECT
+    public InteractableObject cInteractableObject;
+    /* ------------------------------------------------------ */
 
 
     /* ---------------------- ACTION ------------------------ */
@@ -30,7 +41,7 @@ public class InteractableObject : MonoBehaviour
     public Transform aTransformToMove;
     public Vector3 aPositionMove;
     public bool aSnapMove = false;
-    public float aDistancePerSecondsMove;
+    public float aTimeToMove;
 
 
     //FOR ROTATE
@@ -54,13 +65,18 @@ public class InteractableObject : MonoBehaviour
     //FOR EXTRA ACTIONS
     public ActionObject[] aExtraCustomActions;
     public int aExtraCustomActionsChoice;
-
     /* ------------------------------------------------------ */
 
     private bool activated = false;
 
+    public bool HasBeenActivated()
+    {
+        return activated;
+    }
+
     public void Interact(SenderInfo sender)
     {
+        //If this is meant only for players, but the interacting object is not a player
         if (iPlayerExclusive && sender.s_Type != SENDER_TYPE.PLAYER)
         {
             return;
@@ -68,6 +84,39 @@ public class InteractableObject : MonoBehaviour
 
         if (!activated)
         {
+            //Check for Conditions
+            switch (cType)
+            {
+                case CONDITION_TYPE.NONE:
+                    //No Condition needed, continue
+                    break;
+
+                case CONDITION_TYPE.ITEM:
+                    if (Utility.HasItem(cItemConditionString) == false)
+                    {
+                        //Get out of here if the Condition wasn't met
+                        return;
+                    }
+                    break;
+
+                case CONDITION_TYPE.ACTIVATED:
+                    if (cInteractableObject.HasBeenActivated() == false)
+                    {
+                        //Get out of here if the Condition wasn't met
+                        return;
+                    }
+                    break;
+
+                case CONDITION_TYPE.CUSTOM:
+                    if (cCustom.Condition(sender) == false)
+                    {
+                        //Get out of here if the Condition wasn't met
+                        return;
+                    }
+                    break;
+            }
+
+            //Decide Action
             switch (aType)
             {
                 case ACTION_TYPE.MOVE:
@@ -114,7 +163,7 @@ public class InteractableObject : MonoBehaviour
             aPositionMove = Utility.RoundVector3(aPositionMove);
         }
 
-        StartCoroutine(IEMove(aTransformToMove.position + aPositionMove, aDistancePerSecondsMove));
+        StartCoroutine(IEMove(aTransformToMove.position + aPositionMove, aTimeToMove));
     }
 
     void Rotate()
@@ -134,7 +183,7 @@ public class InteractableObject : MonoBehaviour
 
     }
 
-    IEnumerator IEMove(Vector3 to, float distance)
+    IEnumerator IEMove(Vector3 to, float time)
     {
 
         //here goes repeatable code?
@@ -144,18 +193,18 @@ public class InteractableObject : MonoBehaviour
             yield return new WaitForSeconds(distance);
         }*/
 
-        float delta = distance * Time.deltaTime;
         float t = 0.0f;
-        while (t < distance)
+        float d = Vector3.Distance(aTransformToMove.position, to);
+
+        while (t < time)
         {
-            t += Time.deltaTime;
+            float delta = (d * Time.deltaTime) / time;
 
             aTransformToMove.position = Vector3.MoveTowards(aTransformToMove.position, to, delta);
+            t += Time.deltaTime;
 
             yield return null;
         }
-
-
 
         //done
     }
@@ -217,12 +266,14 @@ public class InteractableObjectEditor : Editor
         iObject = target as InteractableObject;
         
         iObject.iType = (INTERACTION_TYPE)EditorGUILayout.EnumPopup("Interaction Type:", iObject.iType);
+        iObject.cType = (CONDITION_TYPE)EditorGUILayout.EnumPopup("Condition Type:", iObject.cType);
         iObject.aType = (ACTION_TYPE)EditorGUILayout.EnumPopup("Action Type:", iObject.aType);
 
         HideAndClearVariables();
         serializedObject.Update();
 
         ShowInteractionGUI(iObject.iType);
+        ShowConditionGUI(iObject.cType);
         ShowActionGUI(iObject.aType);
         
 
@@ -252,6 +303,35 @@ public class InteractableObjectEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("iPlayerExclusive"), new GUIContent("Exclusive to Player"));
     }
 
+    void ShowConditionGUI(CONDITION_TYPE cTypeGUI)
+    {
+        GUILayout.Space(25.0f);
+        GUILayout.Label("Condition Options", EditorStyles.boldLabel);
+
+        switch (cTypeGUI)
+        {
+            case CONDITION_TYPE.NONE:
+                EditorGUILayout.LabelField("<No Conditions>");
+                break;
+
+            case CONDITION_TYPE.ITEM:
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Has Item:");
+                iObject.cItemID = EditorGUILayout.Popup(iObject.cItemID, Item.ItemNames());
+                iObject.cItemConditionString = Item.ItemNames()[iObject.cItemID];
+                EditorGUILayout.EndHorizontal();
+                break;
+
+            case CONDITION_TYPE.ACTIVATED:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("cInteractableObject"), new GUIContent("Has Activated"));
+                break;
+
+            case CONDITION_TYPE.CUSTOM:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("cCustom"), new GUIContent("Custom Condition"));
+                break;
+        }
+    }
+
     void ShowActionGUI(ACTION_TYPE aTypeGUI)
     {
         GUILayout.Space(25.0f);
@@ -263,7 +343,7 @@ public class InteractableObjectEditor : Editor
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aTransformToMove"), new GUIContent("Move Object"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aPositionMove"), new GUIContent("Move to Position"));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aSnapMove"), new GUIContent("Snap Movement"));
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("aDistancePerSecondsMove"), new GUIContent("Distance Per Second"));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aTimeToMove"), new GUIContent("Seconds to Move"));
                 break;
 
             case ACTION_TYPE.ROTATE:
@@ -380,10 +460,11 @@ public class InteractableObjectEditor : Editor
             Handles.CircleCap(0, tPos, rot, 0.25f);
 
             
-            iObjectMesh = iObject.GetComponent<MeshFilter>();
+            iObjectMesh = iObject.aTransformToMove.GetComponent<MeshFilter>();
+            
             if (iObjectMesh != null)
             {
-                Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.transform.rotation, editorMat, 0);
+                Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.aTransformToMove.rotation, editorMat, 0);
             }
         }
     }

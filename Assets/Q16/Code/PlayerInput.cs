@@ -41,6 +41,66 @@ public class PlayerInput : MonoBehaviour
 
     float damageModifier = 1.0f;
 
+
+
+
+
+
+
+
+
+
+
+
+
+    public float walkSpeed = 6.0f;
+    public float runSpeed = 10.0f;
+    public float jumpSpeed = 4.0f;
+    public float gravity = 10.0f;
+    public float slideSpeed = 5.0f;
+    // Small amounts of this results in bumping when walking down slopes, but large amounts results in falling too fast
+    public float antiBumpFactor = .75f;
+
+
+    // If true, diagonal speed (when strafing + moving forward or back) can't exceed normal move speed; otherwise it's about 1.4 times faster
+    private bool limitDiagonalSpeed = false;
+    public bool enableRunning = true;
+    // If the player ends up on a slope which is at least the Slope Limit as set on the character controller, then he will slide down
+    public bool slideWhenOverSlopeLimit = false;
+    // If checked and the player is on an object tagged "Slide", he will slide down it regardless of the slope limit
+    public bool slideOnTaggedObjects = false;
+    // If checked, then the player can change direction while in the air
+    public bool airControl = true;
+
+    // Player must be grounded for at least this many physics frames before being able to jump again; set to 0 to allow bunny hopping
+    public int antiBunnyHopFactor = 0;
+
+    private Vector3 moveDirection = Vector3.zero;
+    private bool grounded = false;
+    private CharacterController controller;
+    private Transform myTransform;
+    private float speed;
+    private RaycastHit hit;
+    private float fallStartLevel;
+    private bool falling;
+    private float slideLimit;
+    private float rayDistance;
+    private Vector3 contactPoint;
+    private bool playerControl = false;
+    private int jumpTimer;
+
+
+
+
+
+
+
+
+
+
+
+
+
     void Start () 
 	{
 		cc = GetComponent<CharacterController>();
@@ -64,7 +124,135 @@ public class PlayerInput : MonoBehaviour
 
         textMoveSpeed.text = "SPEED: " + forwardMoveSpeed.ToString();
         textChunks.text = "CHUNK MOD: 10 + " + chunks.ToString();
+
+
+
+
+
+
+        
+
+
+
+        myTransform = transform;
+        speed = walkSpeed;
+        rayDistance = (cc.height * .5f) + cc.radius;
+        slideLimit = cc.slopeLimit - .1f;
+        jumpTimer = antiBunnyHopFactor;
     }
+
+
+
+
+
+
+
+
+
+
+
+    void FixedUpdate()
+    {
+        float inputX = Input.GetAxisRaw("Right");
+        float inputY = Input.GetAxisRaw("Forward");
+        // If both horizontal and vertical are used simultaneously, limit speed (if allowed), so the total doesn't exceed normal move speed
+        float inputModifyFactor = (inputX != 0.0f && inputY != 0.0f && limitDiagonalSpeed) ? .7071f : 1.0f;
+
+        if (grounded)
+        {
+            bool sliding = false;
+            // See if surface immediately below should be slid down. We use this normally rather than a ControllerColliderHit point,
+            // because that interferes with step climbing amongst other annoyances
+            if (Physics.Raycast(myTransform.position, -Vector3.up, out hit, rayDistance))
+            {
+                if (Vector3.Angle(hit.normal, Vector3.up) > slideLimit)
+                {
+                    sliding = true;
+                }
+            }
+            // However, just raycasting straight down from the center can fail when on steep slopes
+            // So if the above raycast didn't catch anything, raycast down from the stored ControllerColliderHit point instead
+            else
+            {
+                Physics.Raycast(contactPoint + Vector3.up, -Vector3.up, out hit);
+                if (Vector3.Angle(hit.normal, Vector3.up) > slideLimit)
+                {
+                    sliding = true;
+                }
+            }
+
+            // If we were falling, and we fell a vertical distance greater than the threshold, run a falling damage routine
+            if (falling)
+            {
+                falling = false;
+                FallingDamageAlert(fallStartLevel - myTransform.position.y);
+            }
+
+            if (enableRunning)
+            {
+                //speed = Input.GetButton("Run") ? runSpeed : walkSpeed;
+            }
+
+            // If sliding (and it's allowed), or if we're on an object tagged "Slide", get a vector pointing down the slope we're on
+            if ((sliding && slideWhenOverSlopeLimit))
+            {
+                Vector3 hitNormal = hit.normal;
+                moveDirection = new Vector3(hitNormal.x, -hitNormal.y, hitNormal.z);
+                Vector3.OrthoNormalize(ref hitNormal, ref moveDirection);
+                moveDirection *= slideSpeed;
+                playerControl = false;
+            }
+            // Otherwise recalculate moveDirection directly from axes, adding a bit of -y to avoid bumping down inclines
+            else
+            {
+                moveDirection = new Vector3(inputX * inputModifyFactor, -antiBumpFactor, inputY * inputModifyFactor);
+                moveDirection = myTransform.TransformDirection(moveDirection) * speed;
+                playerControl = true;
+            }
+
+            // Jump! But only if the jump button has been released and player has been grounded for a given number of frames
+            if (!Input.GetButton("Jump"))
+                jumpTimer++;
+            else if (jumpTimer >= antiBunnyHopFactor)
+            {
+                moveDirection.y = jumpSpeed;
+                jumpTimer = 0;
+            }
+        }
+        else
+        {
+            // If we stepped over a cliff or something, set the height at which we started falling
+            if (!falling)
+            {
+                falling = true;
+                fallStartLevel = myTransform.position.y;
+            }
+
+            // If air control is allowed, check movement but don't touch the y component
+            if (airControl && playerControl)
+            {
+                moveDirection.x = inputX * speed * inputModifyFactor;
+                moveDirection.z = inputY * speed * inputModifyFactor;
+                moveDirection = myTransform.TransformDirection(moveDirection);
+            }
+        }
+
+        // Apply gravity
+        moveDirection.y -= gravity * Time.deltaTime;
+
+        // Move the controller, and set grounded true or false depending on whether we're standing on something
+        grounded = (cc.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     void Update () 
@@ -109,7 +297,7 @@ public class PlayerInput : MonoBehaviour
         }
 
         Vector3 finalMove = movement + forces;
-        cc.Move(finalMove * Time.deltaTime);
+        //cc.Move(finalMove * Time.deltaTime);
 
         if (forces.magnitude > 0.0f)
         {
@@ -200,7 +388,6 @@ public class PlayerInput : MonoBehaviour
             if (inventory.CheckWeaponCD())
             {
                 inventory.FireWeapon(weaponPos.transform.position, cam.transform.forward);
-                Stats.info.amountShot++;
             }
 		}
 
@@ -219,15 +406,21 @@ public class PlayerInput : MonoBehaviour
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        contactPoint = hit.point;
+
+
+
         //If we get pushed somewhere and collide with a wall or anything,
         //disable the pushing force.
-        forces.x = 0.0f; forces.z = 0.0f;
-        //forces.y = 0.0f;
-        
+        //forces.x = 0.0f; forces.z = 0.0f;
+
         if (Vector3.Angle(hit.normal, Vector3.up) > 15.0f)
         {
-            forces = Vector3.Reflect(-Vector3.up, hit.normal);
+            //forces = Vector3.Reflect(-Vector3.up, hit.normal);
         }
+
+
+
     }
 
 	void OnTriggerEnter (Collider col)
@@ -270,7 +463,7 @@ public class PlayerInput : MonoBehaviour
 
         Vector3 v = cc.velocity;
         v.y = strength;
-        AddForce(v, 15.0f);
+        //AddForce(v, 15.0f);
     }
 
     public void AddForce(Vector3 dir, float force)
@@ -293,5 +486,10 @@ public class PlayerInput : MonoBehaviour
     public void SetDamageModifier(float dmg)
     {
         damageModifier = dmg;
+    }
+
+    void FallingDamageAlert(float fallDistance)
+    {
+        //Play hit ground sfx
     }
 }

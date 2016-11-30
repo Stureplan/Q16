@@ -17,6 +17,7 @@ public class Inventory : MonoBehaviour
     void Start()
     {
         SetupItems();
+        
         hasWeapon = new bool[weaponObjects.Length];
 
         for (int i = 0; i < weaponObjects.Length; i++)
@@ -36,8 +37,8 @@ public class Inventory : MonoBehaviour
     {
         itemObjects = new Dictionary<Item, bool>();
 
-        itemObjects.Add(Item.SkeletonKey(), false);
-        itemObjects.Add(Item.FleshKey(), false);
+        //itemObjects.Add(Item.Get("Skeleton Key"), false);
+        //itemObjects.Add(Item.Get("Flesh Key"), false);
     }
 
     public void FireWeapon(Vector3 pos, Vector3 dir)

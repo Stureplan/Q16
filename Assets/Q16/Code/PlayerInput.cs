@@ -57,20 +57,20 @@ public class PlayerInput : MonoBehaviour
     public float runSpeed = 10.0f;
     public float jumpSpeed = 4.0f;
     public float gravity = 10.0f;
-    public float slideSpeed = 5.0f;
+    public float slideSpeed = 2.5f;
     // Small amounts of this results in bumping when walking down slopes, but large amounts results in falling too fast
     public float antiBumpFactor = .75f;
 
 
     // If true, diagonal speed (when strafing + moving forward or back) can't exceed normal move speed; otherwise it's about 1.4 times faster
     private bool limitDiagonalSpeed = false;
-    public bool enableRunning = true;
+    private bool enableRunning = true;
     // If the player ends up on a slope which is at least the Slope Limit as set on the character controller, then he will slide down
-    public bool slideWhenOverSlopeLimit = false;
+    private bool slideWhenOverSlopeLimit = true;
     // If checked and the player is on an object tagged "Slide", he will slide down it regardless of the slope limit
-    public bool slideOnTaggedObjects = false;
+    private bool slideOnTaggedObjects = false;
     // If checked, then the player can change direction while in the air
-    public bool airControl = true;
+    private bool airControl = false;
 
     // Player must be grounded for at least this many physics frames before being able to jump again; set to 0 to allow bunny hopping
     public int antiBunnyHopFactor = 0;
@@ -90,7 +90,7 @@ public class PlayerInput : MonoBehaviour
     private int jumpTimer;
 
 
-
+    private Vector3 exForces;
 
 
 
@@ -240,8 +240,25 @@ public class PlayerInput : MonoBehaviour
         // Apply gravity
         moveDirection.y -= gravity * Time.deltaTime;
 
+
+
         // Move the controller, and set grounded true or false depending on whether we're standing on something
         grounded = (cc.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
+
+
+
+        //FORCES --v
+        if (exForces.magnitude > 0.2f)
+        {
+            //if (!grounded)
+            {
+                cc.Move(exForces * Time.deltaTime);
+            }
+
+            //if (grounded) { exForces = Vector3.zero; }
+            //if (!grounded)
+            exForces = Vector3.Lerp(exForces, Vector3.zero, Time.deltaTime);
+        }
     }
 
 
@@ -408,7 +425,7 @@ public class PlayerInput : MonoBehaviour
     {
         contactPoint = hit.point;
 
-
+        exForces = Vector3.zero;
 
         //If we get pushed somewhere and collide with a wall or anything,
         //disable the pushing force.
@@ -470,7 +487,7 @@ public class PlayerInput : MonoBehaviour
     {
         dir.Normalize();
 
-        forces = dir * force / mass;
+        exForces += dir * force / mass;
     }
 
     public void AddAirborneForce(Vector3 dir, float force)
@@ -491,5 +508,6 @@ public class PlayerInput : MonoBehaviour
     void FallingDamageAlert(float fallDistance)
     {
         //Play hit ground sfx
+       
     }
 }

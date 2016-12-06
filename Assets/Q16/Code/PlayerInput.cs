@@ -446,8 +446,7 @@ public class PlayerInput : MonoBehaviour
 		{
             inventory.SetHasWeapon(2, true);
 			Destroy (col.gameObject);
-			Stats.info.foundSecret = true;
-            //TODO: Set GUI text
+			//TODO: Set GUI text
 		}
 
         if (col.tag == "Portal")

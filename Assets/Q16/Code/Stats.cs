@@ -11,7 +11,7 @@ public static class Stats
         public int amountHit;
         public int amountShot;
         public int enemiesKilled;
-        public bool foundSecret;
+        public int secretsFound;
     }
 
     static Stats()
@@ -25,6 +25,6 @@ public static class Stats
         info.amountHit = 0;
         info.amountShot = 0;
         info.enemiesKilled = 0;
-        info.foundSecret = false;
+        info.secretsFound = 0;
     }
 }

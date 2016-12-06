@@ -40,6 +40,7 @@ public enum ACTION_TYPE
     HIDE,
     SHOW,
     SPAWN_ENEMY,
+    SECRET,
     CUSTOM
 }
 

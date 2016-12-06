@@ -62,6 +62,10 @@ public class InteractableObject : MonoBehaviour
     //FOR SPAWN ENEMY
     public EnemySpawn[] aEnemySpawns;
 
+    //FOR SECRET
+    public bool aSecretCustomMessage = false;
+    public string aSecretMessage;
+
     //FOR CUSTOM
     public ActionObject aCustom;
 
@@ -142,6 +146,10 @@ public class InteractableObject : MonoBehaviour
                     SpawnEnemy(sender);
                     break;
 
+                case ACTION_TYPE.SECRET:
+                    Secret();
+                    break;
+
                 case ACTION_TYPE.CUSTOM:
                     aCustom.Action(sender);
                     break;
@@ -187,7 +195,14 @@ public class InteractableObject : MonoBehaviour
             spawns[i].SetPrefab(aEnemySpawns[i].e_Prefab);
             spawns[i].Action(sender);
         }
+    }
 
+    void Secret()
+    {
+        Stats.info.secretsFound++;
+
+        if (aSecretMessage != "")   { MessageLog.Message(aSecretMessage); }
+        else                        { MessageLog.Message("Secret found"); }
     }
 
     IEnumerator IEMove(int i, Vector3 to, float time)
@@ -373,12 +388,10 @@ public class InteractableObjectEditor : Editor
 
             case ACTION_TYPE.HIDE:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aHide"), new GUIContent("Hide Object"));
-
                 break;
 
             case ACTION_TYPE.SHOW:
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("aShow"), new GUIContent("Show Object"));
-
                 break;
 
             case ACTION_TYPE.SPAWN_ENEMY:
@@ -421,6 +434,14 @@ public class InteractableObjectEditor : Editor
 
                 GUILayout.EndHorizontal();
 
+                break;
+
+            case ACTION_TYPE.SECRET:
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("aSecretCustomMessage"), new GUIContent("Use Custom Message"));
+                if (iObject.aSecretCustomMessage)
+                {
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("aSecretMessage"), new GUIContent("Message"));
+                }
                 break;
                 
             case ACTION_TYPE.CUSTOM:

@@ -474,42 +474,46 @@ public class InteractableObjectEditor : Editor
 
     void MoveGizmos()
     {
-        for (int i = 0; i < iObject.aMove.Length; i++)
+        if (iObject.aMove != null)
         {
-            if (iObject.aMove[i].transformToMove != null)
+            for (int i = 0; i < iObject.aMove.Length; i++)
             {
-                Vector3 fPos, tPos;
-                Vector3 a = iObject.aMove[i].transformToMove.position;
-
-
-                fPos = iObject.aMove[i].transformToMove.position;
-                tPos = iObject.aMove[i].toPosition + fPos;
-                if (iObject.aMove[i].snapMove)
+                if (iObject.aMove[i].transformToMove != null)
                 {
-                    tPos = Utility.RoundVector3(tPos);
-                }
+                    Vector3 fPos, tPos;
+                    Vector3 a = iObject.aMove[i].transformToMove.position;
+
+
+                    fPos = iObject.aMove[i].transformToMove.position;
+                    tPos = iObject.aMove[i].toPosition + fPos;
+                    if (iObject.aMove[i].snapMove)
+                    {
+                        tPos = Utility.RoundVector3(tPos);
+                    }
 
 
 
-                Vector3 dir = (tPos - fPos).normalized;
-                Quaternion rot = Quaternion.identity;
-                if (dir != Vector3.zero) rot = Quaternion.LookRotation(dir);
+                    Vector3 dir = (tPos - fPos).normalized;
+                    Quaternion rot = Quaternion.identity;
+                    if (dir != Vector3.zero) rot = Quaternion.LookRotation(dir);
 
 
 
-                Handles.color = Color.white;
-                Handles.DrawLine(fPos, tPos);
-                Handles.CircleCap(0, tPos, rot, 0.25f);
+                    Handles.color = Color.white;
+                    Handles.DrawLine(fPos, tPos);
+                    Handles.CircleCap(0, tPos, rot, 0.25f);
 
 
-                iObjectMesh = iObject.aMove[i].transformToMove.GetComponent<MeshFilter>();
+                    iObjectMesh = iObject.aMove[i].transformToMove.GetComponent<MeshFilter>();
 
-                if (iObjectMesh != null)
-                {
-                    Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.aMove[i].transformToMove.rotation, editorMat, 0);
+                    if (iObjectMesh != null)
+                    {
+                        Graphics.DrawMesh(iObjectMesh.sharedMesh, tPos, iObject.aMove[i].transformToMove.rotation, editorMat, 0);
+                    }
                 }
             }
         }
+
         
     }
 

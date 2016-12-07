@@ -250,19 +250,38 @@ public class PlayerInput : MonoBehaviour
         //FORCES --v
         if (exForces.magnitude > 0.2f)
         {
+
+
             //if (!grounded)
             {
                 cc.Move(exForces * Time.deltaTime);
             }
 
+
+
+
+
             //if (grounded) { exForces = Vector3.zero; }
             //if (!grounded)
             exForces = Vector3.Lerp(exForces, Vector3.zero, Time.deltaTime);
         }
+
+        if (exForces.magnitude < 10.0f)
+        {
+            //If we've collided with ground already and are trying to move away...
+            if ((Mathf.Abs(moveDirection.x) < 0.4f) || (Mathf.Abs(moveDirection.z) < 0.4f))
+            {
+                //...Zero out the external forces
+                if (grounded == true)
+                {
+                    exForces = Vector3.zero;
+
+                }
+            }
+        }
     }
 
-
-
+    
 
 
 
@@ -425,7 +444,7 @@ public class PlayerInput : MonoBehaviour
     {
         contactPoint = hit.point;
 
-        exForces = Vector3.zero;
+        //exForces = Vector3.zero;
 
         //If we get pushed somewhere and collide with a wall or anything,
         //disable the pushing force.
@@ -486,7 +505,7 @@ public class PlayerInput : MonoBehaviour
     {
         dir.Normalize();
 
-        exForces += dir * force / mass;
+        exForces = dir * force / mass;
     }
 
     public void AddAirborneForce(Vector3 dir, float force)

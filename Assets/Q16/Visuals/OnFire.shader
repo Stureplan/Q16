@@ -68,8 +68,8 @@ Shader "Shader Forge/OnFire" {
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 float4 _Noise_var = tex2Dlod(_Noise,float4(TRANSFORM_TEX(o.uv0, _Noise),0.0,0));
                 float node_4045 = saturate(step((1.0 - _FireSlider),_Noise_var.r));
-                float4 node_6886 = _Time + _TimeEditor;
-                float2 node_9593 = (o.uv0+node_6886.g*float2(0,0.1));
+                float4 node_6201 = _Time + _TimeEditor;
+                float2 node_9593 = (o.uv0+node_6201.g*float2(0,0.1));
                 float3 node_2367 = UnpackNormal(tex2Dlod(_FireTexture,float4(TRANSFORM_TEX(node_9593, _FireTexture),0.0,0)));
                 v.vertex.xyz += (node_4045*node_2367.rgb*0.1);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
@@ -97,8 +97,8 @@ Shader "Shader Forge/OnFire" {
                 float3 indirectDiffuse = float3(0,0,0);
                 indirectDiffuse += UNITY_LIGHTMODEL_AMBIENT.rgb; // Ambient Light
                 float4 _Texture_var = tex2D(_Texture,TRANSFORM_TEX(i.uv0, _Texture));
-                float4 node_6886 = _Time + _TimeEditor;
-                float2 node_8945 = (2.0*(i.uv0+node_6886.g*float2(0,0.4)));
+                float4 node_6201 = _Time + _TimeEditor;
+                float2 node_8945 = (2.0*(i.uv0+node_6201.g*float2(0,0.4)));
                 float4 _BurnTexture_var = tex2D(_BurnTexture,TRANSFORM_TEX(node_8945, _BurnTexture));
                 float4 _Noise_var = tex2D(_Noise,TRANSFORM_TEX(i.uv0, _Noise));
                 float node_4045 = saturate(step((1.0 - _FireSlider),_Noise_var.r));
@@ -166,8 +166,8 @@ Shader "Shader Forge/OnFire" {
                 o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 float4 _Noise_var = tex2Dlod(_Noise,float4(TRANSFORM_TEX(o.uv0, _Noise),0.0,0));
                 float node_4045 = saturate(step((1.0 - _FireSlider),_Noise_var.r));
-                float4 node_1209 = _Time + _TimeEditor;
-                float2 node_9593 = (o.uv0+node_1209.g*float2(0,0.1));
+                float4 node_7893 = _Time + _TimeEditor;
+                float2 node_9593 = (o.uv0+node_7893.g*float2(0,0.1));
                 float3 node_2367 = UnpackNormal(tex2Dlod(_FireTexture,float4(TRANSFORM_TEX(node_9593, _FireTexture),0.0,0)));
                 v.vertex.xyz += (node_4045*node_2367.rgb*0.1);
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
@@ -193,8 +193,8 @@ Shader "Shader Forge/OnFire" {
                 float NdotL = max(0.0,dot( normalDirection, lightDirection ));
                 float3 directDiffuse = max( 0.0, NdotL) * attenColor;
                 float4 _Texture_var = tex2D(_Texture,TRANSFORM_TEX(i.uv0, _Texture));
-                float4 node_1209 = _Time + _TimeEditor;
-                float2 node_8945 = (2.0*(i.uv0+node_1209.g*float2(0,0.4)));
+                float4 node_7893 = _Time + _TimeEditor;
+                float2 node_8945 = (2.0*(i.uv0+node_7893.g*float2(0,0.4)));
                 float4 _BurnTexture_var = tex2D(_BurnTexture,TRANSFORM_TEX(node_8945, _BurnTexture));
                 float4 _Noise_var = tex2D(_Noise,TRANSFORM_TEX(i.uv0, _Noise));
                 float node_4045 = saturate(step((1.0 - _FireSlider),_Noise_var.r));
@@ -245,8 +245,8 @@ Shader "Shader Forge/OnFire" {
                 o.uv0 = v.texcoord0;
                 float4 _Noise_var = tex2Dlod(_Noise,float4(TRANSFORM_TEX(o.uv0, _Noise),0.0,0));
                 float node_4045 = saturate(step((1.0 - _FireSlider),_Noise_var.r));
-                float4 node_4908 = _Time + _TimeEditor;
-                float2 node_9593 = (o.uv0+node_4908.g*float2(0,0.1));
+                float4 node_3864 = _Time + _TimeEditor;
+                float2 node_9593 = (o.uv0+node_3864.g*float2(0,0.1));
                 float3 node_2367 = UnpackNormal(tex2Dlod(_FireTexture,float4(TRANSFORM_TEX(node_9593, _FireTexture),0.0,0)));
                 v.vertex.xyz += (node_4045*node_2367.rgb*0.1);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );

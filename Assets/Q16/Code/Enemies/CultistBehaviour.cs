@@ -161,7 +161,7 @@ public class CultistBehaviour : EnemyBehaviour
     {
         if (!cc.isGrounded)
         {
-            forces.y += Physics.gravity.y * 2.0f * Time.deltaTime;
+            forces.y += Physics.gravity.y * Time.deltaTime;
         }
         else
         {

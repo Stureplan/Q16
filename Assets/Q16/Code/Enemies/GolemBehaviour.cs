@@ -36,7 +36,7 @@ public class GolemBehaviour : EnemyBehaviour
     Cooldown shootTimer;
 	Animator anim;
 
-    NavMeshAgent agent;
+    UnityEngine.AI.NavMeshAgent agent;
     CharacterController cc;
     Vector3 forces;
     
@@ -51,7 +51,7 @@ public class GolemBehaviour : EnemyBehaviour
         //Golem specific |
         //               v
         cc = GetComponent<CharacterController>();
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         forces = Vector3.zero;
 
 		hand = transform.Find ("hips/neck/arm_r/elbow_r/hand_r");

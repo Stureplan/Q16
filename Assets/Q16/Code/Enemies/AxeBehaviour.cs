@@ -35,14 +35,18 @@ public class AxeBehaviour : MonoBehaviour
         IDamageable entity;
         if (col.gameObject.IsDamageable(out entity))
         {
-            entity.Damage(15, DAMAGE_TYPE.MELEE, sender);
-
-            if (entity.Type() == SENDER_TYPE.PLAYER)
+            if (col.transform != gb.transform)
             {
-                Vector3 dir = gb.transform.forward;
-                dir.y = 0.2f;
-                col.GetComponentInParent<PlayerInput>().AddForce(dir, 10.0f);
+                entity.Damage(15, DAMAGE_TYPE.MELEE, sender);
+
+                if (entity.Type() == SENDER_TYPE.PLAYER)
+                {
+                    Vector3 dir = gb.transform.forward;
+                    dir.y = 0.2f;
+                    col.GetComponentInParent<PlayerInput>().AddForce(dir, 10.0f);
+                }
             }
+
         }
     }
 

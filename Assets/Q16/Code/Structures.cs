@@ -147,6 +147,7 @@ public struct SenderInfo
         return p;
     }
 
+    public static int ID = 1;
     public static SenderInfo Create(string tag, Transform t, SENDER_TYPE type)
     {
         SenderInfo sender;

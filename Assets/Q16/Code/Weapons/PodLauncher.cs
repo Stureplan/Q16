@@ -29,7 +29,6 @@ public class PodLauncher : Weapon
         power = 15.0f;
 
         cooldown = new Cooldown(CD, false);
-        index = 4;
 	}
 
     void OnDisable()

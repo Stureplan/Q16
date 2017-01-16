@@ -23,7 +23,6 @@ public class LavaGun : Weapon
 
         CD = 0.1f;
         cooldown = new Cooldown(CD);
-        index = 8;
 	}
 	
 	void Update ()

@@ -44,7 +44,6 @@ public class SuperShotgun : Weapon
         if (CD < 0.25f) { CD = 0.25f; }
 
         cooldown = new Cooldown(CD, false);
-        index = 1;
 	}
 
     void OnDisable()

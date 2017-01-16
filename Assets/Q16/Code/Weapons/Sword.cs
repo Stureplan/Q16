@@ -26,7 +26,7 @@ public class Sword : Weapon
         if (CD < 0.2f) { CD = 0.1f; }
 
         cooldown = new Cooldown(CD);
-        index = 7;
+
 	}
 
     void OnDisable()

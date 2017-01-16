@@ -46,7 +46,6 @@ public class Railgun : Weapon
         if (CD < 0.1f) { CD = 0.1f; }
 
         cooldown = new Cooldown(CD);
-        index = 6;
 
         textCD.text = "RLGN CD: " + CD.ToString();
     }

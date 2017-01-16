@@ -22,7 +22,6 @@ public class GrenadeLauncher : Weapon
         if (CD < 0.15f) { CD = 0.15f; }
 
         cooldown = new Cooldown(CD, false);
-        index = 2;
 
         //animations.Stop();
     }

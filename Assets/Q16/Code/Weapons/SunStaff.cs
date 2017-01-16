@@ -34,7 +34,6 @@ public class SunStaff : Weapon
         rb.maxAngularVelocity = 20.0f;
 
         cooldown = new Cooldown(CD);
-        index = 7;
 	}
 
     void OnDisable()

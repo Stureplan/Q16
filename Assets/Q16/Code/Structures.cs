@@ -11,6 +11,19 @@ public interface IDamageable
     int Health();
 }
 
+public enum WPN_TYPE
+{
+    SHOTGUN = 0,
+    SUPERSHOTGUN,
+    GRENADELAUNCHER,
+    ROCKETLAUNCHER,
+    PLASMAGUN,
+    RAILGUN,
+    PODLAUNCHER,
+    LAVAGUN,
+    SUNSTAFF
+}
+
 public enum ENEMY_TYPE
 {
     GOLEM,

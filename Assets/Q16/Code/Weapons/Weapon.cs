@@ -1,22 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public enum WPN_TYPE
-{
-    RocketLauncher,
-    Railgun,
-    Shotgun,
-    SuperShotgun,
-    LightningGun
-}
-
-
-
 public class Weapon : MonoBehaviour 
 {
+    public WPN_TYPE type;
     public float CD;
-    public int index;
     public Cooldown cooldown;
     public bool hasWeapon = false;
     protected float power;
@@ -53,11 +41,6 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void SetIndex(int i)
-    {
-        index = i;
-    }
-
     public float GetCD()
     {
         return CD;
@@ -71,5 +54,10 @@ public class Weapon : MonoBehaviour
     public bool HasWeapon()
     {
         return hasWeapon;
+    }
+
+    public void SetHasWeapon(bool value)
+    {
+        hasWeapon = value;
     }
 }

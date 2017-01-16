@@ -30,7 +30,6 @@ public class RocketLauncher : Weapon
 
 
         cooldown = new Cooldown(CD);
-        index = 3;
 
         textCD = GameObject.Find("RocketCooldown").GetComponent<Text>();
         textCD.text = "RCKT CD: " + CD.ToString();

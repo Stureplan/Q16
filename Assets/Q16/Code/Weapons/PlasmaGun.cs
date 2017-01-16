@@ -53,7 +53,6 @@ public class PlasmaGun : Weapon
         if (CD < 0.05f) { CD = 0.05f; }
 
         cooldown = new Cooldown(CD);
-        index = 5;
     }
 
     void OnDisable()

@@ -41,7 +41,6 @@ public class Shotgun : Weapon
         power = 10.0f;
 
         cooldown = new Cooldown(CD);
-        index = 0;
     }
 
     void Update ()

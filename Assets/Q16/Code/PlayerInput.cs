@@ -362,50 +362,55 @@ public class PlayerInput : MonoBehaviour
             Jump(jumpStrength);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetButtonDown("Shotgun"))
         {
-            inventory.ChangeWeapon(0);
+            inventory.ChangeWeapon(WPN_TYPE.SHOTGUN);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetButtonDown("SuperShotgun"))
         {
-            inventory.ChangeWeapon(1);
+            inventory.ChangeWeapon(WPN_TYPE.SUPERSHOTGUN);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetButtonDown("GrenadeLauncher"))
         {
-            inventory.ChangeWeapon(2);
+            inventory.ChangeWeapon(WPN_TYPE.GRENADELAUNCHER);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha4))
+        if (Input.GetButtonDown("RocketLauncher"))
         {
-            inventory.ChangeWeapon(3);
+            inventory.ChangeWeapon(WPN_TYPE.ROCKETLAUNCHER);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha5))
+        if (Input.GetButtonDown("PlasmaGun"))
         {
-            inventory.ChangeWeapon(4);
+            inventory.ChangeWeapon(WPN_TYPE.PLASMAGUN);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha6))
+        if (Input.GetButtonDown("Railgun"))
         {
-            inventory.ChangeWeapon(5);
+            inventory.ChangeWeapon(WPN_TYPE.RAILGUN);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+        if (Input.GetButtonDown("PodLauncher"))
         {
-            inventory.ChangeWeapon(6);
+            inventory.ChangeWeapon(WPN_TYPE.PODLAUNCHER);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetButtonDown("LavaGun"))
         {
-            inventory.ChangeWeapon(7);
+            inventory.ChangeWeapon(WPN_TYPE.LAVAGUN);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha9))
+        if (Input.GetButtonDown("SunStaff"))
         {
-            inventory.ChangeWeapon(8);
+            inventory.ChangeWeapon(WPN_TYPE.SUNSTAFF);
         }
+
+        /*if (Input.GetButtonDown("Sword"))
+        {
+            inventory.ChangeWeapon(WPN_TYPE.SWORD);
+        }*/
 
         if (Input.GetKeyDown(KeyCode.M))
         {
@@ -461,12 +466,12 @@ public class PlayerInput : MonoBehaviour
 
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.tag == "Railgun")
+		/*if (col.tag == "Railgun")
 		{
             inventory.SetHasWeapon(2, true);
 			Destroy (col.gameObject);
 			//TODO: Set GUI text
-		}
+		}*/
 
         if (col.tag == "Portal")
         {
